@@ -2,8 +2,8 @@ import { Link, useLocation } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
 
 const navLinks = [
-  { to: '/', label: '首页' },
-  { to: '/blog', label: '博客' },
+  { to: '/', label: 'Home' },
+  { to: '/blog', label: 'Blog' },
 ];
 
 export default function Header({ dark, onToggleTheme }) {
@@ -33,7 +33,7 @@ export default function Header({ dark, onToggleTheme }) {
           <button
             onClick={onToggleTheme}
             className="ml-2 rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
-            aria-label={dark ? '切换到亮色模式' : '切换到暗色模式'}
+            aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {dark ? <Sun size={18} /> : <Moon size={18} />}
           </button>

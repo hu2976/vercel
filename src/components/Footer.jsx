@@ -30,7 +30,7 @@ export default function Footer() {
             )}
           </div>
           <div className="text-center text-sm text-gray-500 dark:text-gray-500">
-            <p>© {new Date().getFullYear()} {config.name} · Powered by Vercel</p>
+            <p>© {new Date().getFullYear()} {config.name} · Powered by GitHub Pages</p>
           </div>
         </div>
       </div>

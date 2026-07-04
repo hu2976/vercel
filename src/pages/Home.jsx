@@ -39,7 +39,7 @@ export default function Home() {
               className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-6 py-3 text-sm font-medium text-white shadow-md hover:bg-primary-700 transition-colors"
             >
               <BookOpen size={16} />
-              阅读博客
+              Blog
               <ArrowRight size={16} />
             </Link>
             {config.social.github && (
@@ -59,7 +59,7 @@ export default function Home() {
                 className="inline-flex items-center gap-2 rounded-full border border-gray-300 dark:border-gray-700 px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 <Mail size={16} />
-                联系我
+                Contact
               </a>
             )}
           </div>
@@ -76,7 +76,7 @@ export default function Home() {
         <div className="mx-auto max-w-2xl">
           <div className="mb-8 flex items-center gap-3">
             <Sparkles size={24} className="text-primary-500" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">关于我</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">About</h2>
           </div>
           <div className="rounded-2xl border border-gray-200 bg-gray-50/50 p-6 dark:border-gray-800 dark:bg-gray-900/50 sm:p-8">
             {config.bio.split('\n').map((paragraph, i) => (
@@ -93,7 +93,7 @@ export default function Home() {
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 flex items-center gap-3">
             <Code size={24} className="text-primary-500" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">技术栈</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Skills</h2>
           </div>
           <div className="flex flex-wrap gap-2">
             {config.skills.map((skill) => (
@@ -113,7 +113,7 @@ export default function Home() {
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 flex items-center gap-3">
             <Code size={24} className="text-primary-500" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">项目展示</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Projects</h2>
           </div>
           <div className="grid gap-6 sm:grid-cols-2">
             {config.projects.map((project) => (
@@ -147,13 +147,13 @@ export default function Home() {
       {/* 博客预览 */}
       <section className="px-4 py-16 sm:py-20 bg-gray-50/50 dark:bg-gray-900/30">
         <div className="mx-auto max-w-4xl text-center">
-          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">最新文章</h2>
-          <p className="mb-8 text-gray-500 dark:text-gray-400">我会在这里分享技术心得和生活感悟</p>
+          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">Latest Posts</h2>
+          <p className="mb-8 text-gray-500 dark:text-gray-400">Sharing tech insights and life updates</p>
           <Link
             to="/blog"
             className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-6 py-3 text-sm font-medium text-white hover:bg-primary-700 transition-colors"
           >
-            浏览博客
+            Blog
             <ArrowRight size={16} />
           </Link>
         </div>

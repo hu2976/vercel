@@ -1,42 +1,42 @@
 ---
-title: 我的第一篇博客
+title: My First Blog Post
 date: 2026-07-04
-excerpt: 欢迎来到我的新博客！这是第一篇文章，聊聊我搭建这个网站的过程。
-tags: [博客, 技术]
+excerpt: Welcome to my new blog! The first post about how I built this site.
+tags: [blog, tech]
 ---
 
-# 我的第一篇博客
+# My First Blog Post
 
-欢迎来到我的新博客！🎉
+Welcome to my new blog! 🎉
 
-## 为什么要搭建这个网站？
+## Why build this site?
 
-我一直想要一个属于自己的空间来记录学习和思考。这个网站使用以下技术栈构建：
+I've always wanted my own space to record what I learn and think. This site is built with:
 
-- **React 18** — 用户界面框架
-- **Vite** — 极速构建工具
-- **Tailwind CSS** — 实用优先的 CSS 框架
-- **Markdown** — 博客文章格式
+- **React 18** — UI framework
+- **Vite** — Blazing fast build tool
+- **Tailwind CSS** — Utility-first CSS framework
+- **Markdown** — Blog post format
 
-## 代码示例
+## Code example
 
 ```javascript
 function greet(name) {
-  return `你好，${name}！欢迎来到我的博客。`;
+  return `Hello, ${name}! Welcome to my blog.`;
 }
 
-console.log(greet('朋友'));
+console.log(greet('friend'));
 ```
 
-## 接下来的计划
+## What's next
 
-1. 定期更新技术文章
-2. 分享项目经验
-3. 记录学习笔记
-4. 偶尔写点生活感悟
+1. Regular tech articles
+2. Share project experiences
+3. Study notes
+4. Occasional life updates
 
 ---
 
-> "学习是一生的事业，分享是最好的学习方式。"
+> "Learning is a lifelong journey. Sharing is the best way to learn."
 
-感谢你的访问！🚀
+Thanks for visiting! 🚀

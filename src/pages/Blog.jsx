@@ -19,7 +19,7 @@ export default function Blog() {
       <div className="px-4 py-20">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-primary-200 border-t-primary-600" />
-          <p className="mt-4 text-gray-500">加载中...</p>
+          <p className="mt-4 text-gray-500">Loading...</p>
         </div>
       </div>
     );
@@ -30,14 +30,14 @@ export default function Blog() {
       <div className="mx-auto max-w-2xl">
         <div className="mb-12 text-center">
           <h1 className="mb-4 text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
-            博客
+            Blog
           </h1>
-          <p className="text-gray-500 dark:text-gray-400">技术分享和生活记录</p>
+          <p className="text-gray-500 dark:text-gray-400">Tech articles and life updates</p>
         </div>
 
         {posts.length === 0 ? (
           <div className="rounded-2xl border border-gray-200 dark:border-gray-800 p-12 text-center">
-            <p className="text-gray-500 dark:text-gray-400">还没有文章，敬请期待！</p>
+            <p className="text-gray-500 dark:text-gray-400">No posts yet. Stay tuned!</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -61,7 +61,7 @@ export default function Blog() {
                     {post.date && (
                       <span className="inline-flex items-center gap-1.5">
                         <Calendar size={14} />
-                        {new Date(post.date).toLocaleDateString('zh-CN', {
+                        {new Date(post.date).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
@@ -77,7 +77,7 @@ export default function Blog() {
                   </div>
 
                   <div className="mt-4 flex items-center gap-1 text-sm font-medium text-primary-600 dark:text-primary-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                    阅读全文
+                    Read more
                     <ArrowRight size={14} />
                   </div>
                 </Link>
