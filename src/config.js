@@ -1,6 +1,6 @@
 // ============================================
 // Personal Config — edit here to customize
-// ============================================
+// =============================================
 
 const config = {
   // Personal info
@@ -29,7 +29,7 @@ In my spare time, I will update my various hobbies and achievements here. I beli
     "Event Planning",
     "Interdepartmental Communication",
     "Innovative Thinking",
-    "Claude Code",
+    "Vibe Coding",
   ],
 
   // Projects
