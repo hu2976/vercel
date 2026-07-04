@@ -5,13 +5,13 @@
 const config = {
   // Personal info
   name: "Hujinghan",
-  title: "Developer / Tech Enthusiast",
+  title: "Developer / Tech Enthusiast / Nutrition Enthusiast",
   tagline: "Building interesting things with code",
-  bio: `Hi, I'm Hujinghan. I love programming, open source, and all things tech.
+  bio: `Hi, I'm Hu Jinghan, a person who falls in love with iced Americano. Welcome to my world.
 
-I focus on web development and cloud computing, always exploring new technologies and applying them to real projects.
+I enjoy deep chatting and taking walks. I keep an eye on the development of nutrition and tech, and I love exploring all new things. Because I believe that learning is a lifelong process, and curiosity keeps life vibrant.
 
-In my spare time, I write blog posts to share what I've learned. I believe technology has the power to make the world better.`,
+In my spare time, I will update my various hobbies and achievements here. I believe that both you who are browsing my page and I who created it will have the future we envision.`,
 
   // Social links
   social: {
@@ -21,14 +21,15 @@ In my spare time, I write blog posts to share what I've learned. I believe techn
 
   // Skills
   skills: [
-    "JavaScript / TypeScript",
-    "React / Vue",
-    "Node.js",
-    "Python",
-    "HTML / CSS",
-    "Git",
-    "Docker",
-    "Linux",
+    "Knowledge of Nutrition",
+    "English",
+    "Public Speaking",
+    "Hosting Interviews",
+    "Copywriting",
+    "Event Planning",
+    "Interdepartmental Communication",
+    "Innovative Thinking",
+    "Claude Code",
   ],
 
   // Projects
