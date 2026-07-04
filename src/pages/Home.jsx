@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import config from '../config'
-import { Mail, ArrowRight, BookOpen, Code, Sparkles } from 'lucide-react'
+import { Mail, ArrowRight, BookOpen, Code, Sparkles, Copy, Check } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 // 品牌图标（lucide-react 不包含，使用 SVG）
@@ -10,6 +11,19 @@ const GithubIcon = () => (
 );
 
 export default function Home() {
+  const [showEmail, setShowEmail] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleContact = () => {
+    if (!showEmail) {
+      setShowEmail(true);
+      return;
+    }
+    navigator.clipboard.writeText(config.social.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div>
       {/* Hero */}
@@ -54,13 +68,16 @@ export default function Home() {
               </a>
             )}
             {config.social.email && (
-              <a
-                href={`mailto:${config.social.email}`}
-                className="inline-flex items-center gap-2 rounded-full border border-gray-300 dark:border-gray-700 px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              <button
+                onClick={handleContact}
+                className="inline-flex items-center gap-2 rounded-full border border-gray-300 dark:border-gray-700 px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
               >
-                <Mail size={16} />
-                Contact
-              </a>
+                {copied ? <Check size={16} className="text-green-500" /> : <Mail size={16} />}
+                {showEmail ? config.social.email : "Contact"}
+                {showEmail && !copied && (
+                  <Copy size={14} className="text-gray-400" />
+                )}
+              </button>
             )}
           </div>
         </div>

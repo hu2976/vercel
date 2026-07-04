@@ -16,7 +16,7 @@ In my spare time, I will update my various hobbies and achievements here. I beli
   // Social links
   social: {
     github: "https://github.com/hu2976",
-    email: "hujinghan0312@163.com",
+    email: "13521752976@163.com",
   },
 
   // Skills
