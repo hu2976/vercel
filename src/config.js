@@ -41,6 +41,18 @@ In my spare time, I will update my various hobbies and achievements here. I beli
     },
   ],
 
+  // Work Set — 作品集。file 指向 public/works 下的静态页面，在 /works/:slug 内嵌展示
+  works: [
+    {
+      slug: "nutrition-engine-eval",
+      title: "食物营养估算引擎 · 评测仪表盘",
+      description: "一套针对「食物营养估算」大模型能力的评测方案：覆盖多种烹饪方式对热量的影响，含测试用例、真值标注与自动评分，最终汇总成可交互的评测看板。",
+      tags: ["Nutrition", "LLM Eval", "Dashboard"],
+      file: "/works/nutrition-engine-eval.html",
+      date: "2026-07-06",
+    },
+  ],
+
   // Site info
   site: {
     title: "Hujinghan | Personal Site",

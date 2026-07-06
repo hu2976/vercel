@@ -4,6 +4,7 @@ import { Sun, Moon } from 'lucide-react'
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/blog', label: 'Blog' },
+  { to: '/works', label: 'Works' },
 ];
 
 export default function Header({ dark, onToggleTheme }) {

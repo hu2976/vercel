@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>食物营养估算引擎 · 评测仪表盘</title>
+<style>
+:root{
+  --bg:#0f0f1a; --card:#1a1a2e; --card2:#16213e; --text:#e0e0e0; --t2:#8888aa;
+  --green:#00e676; --orange:#ff9100; --red:#ff1744; --blue:#448aff; --purple:#e040fb;
+  --cyan:#18ffff; --yellow:#ffea00; --accent:linear-gradient(135deg,#667eea,#764ba2);
+  --shadow:0 8px 32px rgba(0,0,0,0.3); --radius:16px;
+  --glow-green:0 0 20px rgba(0,230,118,0.3); --glow-purple:0 0 20px rgba(224,64,251,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;background-image:radial-gradient(ellipse at 20% 20%,rgba(102,126,234,0.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(224,64,251,0.1) 0%,transparent 50%)}
+.container{max-width:1400px;margin:0 auto;padding:24px}
+
+/* Animated header */
+.hero{text-align:center;padding:48px 24px 32px;position:relative}
+.hero h1{font-size:42px;font-weight:900;background:linear-gradient(135deg,#667eea 0%,#e040fb 50%,#18ffff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;letter-spacing:-1px}
+.hero .subtitle{font-size:15px;color:var(--t2);letter-spacing:2px}
+
+/* Stats row */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.05);transition:transform 0.3s,box-shadow 0.3s}
+.stat-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+.stat-card .icon{font-size:28px;margin-bottom:8px}
+.stat-card .value{font-size:44px;font-weight:900;margin:8px 0}
+.stat-card .label{font-size:13px;color:var(--t2);text-transform:uppercase;letter-spacing:1px}
+.stat-card.accent{background:linear-gradient(135deg,#667eea,#764ba2);border:none}
+.stat-card.accent .label{color:rgba(255,255,255,0.7)}
+.stat-card.accent .value{color:white}
+.glow-green{box-shadow:var(--glow-green)}
+.glow-purple{box-shadow:var(--glow-purple)}
+
+/* Section */
+.section{background:var(--card);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);margin-bottom:24px;border:1px solid rgba(255,255,255,0.05)}
+.section h2{font-size:20px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px;color:white}
+.section h2 .badge{font-size:12px;padding:4px 10px;border-radius:20px;background:rgba(102,126,234,0.2);color:#667eea}
+
+/* Case grid */
+.case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:16px}
+.case-card{background:var(--card2);border-radius:var(--radius);padding:20px;cursor:pointer;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;position:relative;overflow:hidden}
+.case-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:3px 3px 0 0;transition:opacity 0.3s}
+.case-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.5);border-color:rgba(102,126,234,0.3)}
+.case-card.open{border-color:rgba(102,126,234,0.5)}
+.case-card .header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.case-card .name{font-size:16px;font-weight:700;color:white}
+.case-card .id{font-size:11px;color:var(--t2)}
+.case-card .metrics{display:flex;gap:16px;margin:12px 0}
+.case-card .metric{text-align:center}
+.case-card .metric .num{font-size:24px;font-weight:800}
+.case-card .metric .lbl{font-size:10px;color:var(--t2);text-transform:uppercase}
+.case-card .progress-wrap{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;margin-top:4px;overflow:hidden}
+.case-card .progress-bar{height:100%;border-radius:3px;transition:width 0.6s ease}
+.case-card .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.case-card .tag{font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,0.06);color:var(--t2)}
+.case-card .tag.warn{background:rgba(255,145,0,0.15);color:var(--orange)}
+.case-card .tag.good{background:rgba(0,230,118,0.15);color:var(--green)}
+
+/* Expanded detail */
+.detail{display:none;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08)}
+.case-card.open .detail{display:block}
+.field-row{display:flex;align-items:center;padding:6px 0;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.field-row .fname{flex:1;color:var(--t2)}
+.field-row .fval{width:60px;text-align:right;font-weight:600}
+.field-row .fstatus{width:24px;text-align:center}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.green{background:var(--green)}
+.dot.red{background:var(--red)}
+
+/* Comparison table */
+.compare-table{width:100%;border-collapse:collapse;font-size:13px}
+.compare-table th{padding:12px 16px;text-align:left;font-weight:600;color:var(--t2);border-bottom:1px solid rgba(255,255,255,0.08);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.compare-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04)}
+.compare-table tr:hover td{background:rgba(255,255,255,0.02)}
+.rank-badge{display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;border-radius:8px;font-size:12px;font-weight:700}
+.rank-1{background:linear-gradient(135deg,#ffd700,#ff9100);color:#000}
+.rank-2{background:linear-gradient(135deg,#c0c0c0,#90a4ae);color:#000}
+.rank-3{background:linear-gradient(135deg,#cd7f32,#a0522d);color:#fff}
+
+.footer{text-align:center;padding:32px;color:var(--t2);font-size:12px}
+
+@media(max-width:768px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .hero h1{font-size:28px}
+  .case-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>🍳 食物营养估算引擎</h1>
+  <div class="subtitle">PROMPT v1.1 · 评测仪表盘 · 2026-07-03 18:44:32</div>
+</div>
+
+<div class="stats">
+  <div class="stat-card accent glow-purple">
+    <div class="icon">🏆</div>
+    <div class="value">91%</div>
+    <div class="label">综合得分</div>
+  </div>
+  <div class="stat-card glow-green">
+    <div class="icon">📊</div>
+    <div class="value" style="color:var(--green)">89%</div>
+    <div class="label">数值准确率 IRR</div>
+  </div>
+  <div class="stat-card">
+    <div class="icon">🧠</div>
+    <div class="value" style="color:var(--blue)">85%</div>
+    <div class="label">逻辑通过率</div>
+  </div>
+  <div class="stat-card">
+    <div class="icon">✅</div>
+    <div class="value" style="color:var(--cyan)">100%</div>
+    <div class="label">20/20 调用成功</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>📋 用例排行 <span class="badge">20 例</span></h2>
+  <div style="overflow-x:auto">
+  <table class="compare-table">
+    <thead><tr><th>#</th><th>菜名</th><th>IRR</th><th>逻辑</th><th>综合</th><th>脂肪路径</th><th>置信度</th></tr></thead>
+    <tbody id="rank-table"></tbody>
+  </table>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🔍 用例详情 <span class="badge">点击展开</span></h2>
+  <div class="case-grid" id="case-grid"></div>
+</div>
+
+<div class="footer">
+  Food Nutrition Estimation Engine · Prompt Evaluation Dashboard · Powered by DeepSeek API
+</div>
+</div>
+
+<script>
+const D = [{"id": "v2_01", "name": "清蒸鲈鱼", "irr": 100, "logic": 86, "fields": [{"f": "成品总重g", "v": 310.0, "ok": true}, {"f": "每100g.热量kcal", "v": 105.0, "ok": true}, {"f": "每100g.脂肪g", "v": 2.4, "ok": true}, {"f": "每100g.碳水g", "v": 1.5, "ok": true}, {"f": "每100g.蛋白g", "v": 19.0, "ok": true}, {"f": "每100g.钠mg", "v": 380.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.5, "ok": true}, {"f": "整份.热量kcal", "v": 325.0, "ok": true}, {"f": "整份.脂肪g", "v": 7.4, "ok": true}, {"f": "整份.钠mg", "v": 1178.0, "ok": true}, {"f": "整份.GL", "v": 1.2, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "场景影响", "ok": true}, {"n": "高钠预警", "ok": false}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中 - 主要不确定来源：蒸鱼豉油品牌和钠含量未知，采用中位数估算；弃汤流失率15%为默认值，实际可能因操作而异", "warns": ["⚡ 接近每日AI（1500mg）"], "assumes": ["加油量假设：家庭清蒸鲈鱼通常不额外加油，仅靠鱼自身脂肪和蒸鱼豉油中的微量油脂，故路径B中烹饪用油按0g计", "吸油系数取值及原因：鲈鱼为鱼类，致密含水高，吸油系数AF取0.6（低吸油），但本菜无额外用油，故AF未实际触发", "汤汁去留：keep_sauce=false，弃汤，脂肪和钠随汤汁流失，流失率取15%（默认）", "场景：家庭，调味料用量和钠含量低于餐馆水平", "无可利用碳水，GI=0，GL=0"]}, {"id": "v2_02", "name": "白灼西兰花", "irr": 83, "logic": 100, "fields": [{"f": "成品总重g", "v": 210.0, "ok": true}, {"f": "每100g.热量kcal", "v": 34.0, "ok": true}, {"f": "每100g.脂肪g", "v": 0.4, "ok": true}, {"f": "每100g.碳水g", "v": 6.7, "ok": false}, {"f": "每100g.蛋白g", "v": 2.8, "ok": true}, {"f": "每100g.钠mg", "v": 380.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": false}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 71.0, "ok": true}, {"f": "整份.脂肪g", "v": 0.8, "ok": true}, {"f": "整份.钠mg", "v": 798.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "A基线", "conf": "高。食材单一，烹饪方式明确，无复杂调味或高吸油食材，估算结果可靠。", "warns": [], "assumes": ["加油量假设：水煮方式通常不额外加油，脂肪主要来自食材自带（西兰花自带脂肪极低，约0.4g/100g生重）", "吸油系数取值及原因：水煮方式几乎不吸油，MF=0.03，且无高吸油食材，故不触发AF加成", "汤汁去留：弃汤，脂肪和钠随汤汁流失，流失率取15%（默认值）", "场景：家庭，脂肪和钠水平按家庭基线估算", "无可利用碳水，GI=0，GL=0"]}, {"id": "v2_03", "name": "鱼香茄子（餐馆）", "irr": 75, "logic": 100, "fields": [{"f": "成品总重g", "v": 260.0, "ok": true}, {"f": "每100g.热量kcal", "v": 155.0, "ok": true}, {"f": "每100g.脂肪g", "v": 12.5, "ok": true}, {"f": "每100g.碳水g", "v": 6.0, "ok": true}, {"f": "每100g.蛋白g", "v": 4.5, "ok": true}, {"f": "每100g.钠mg", "v": 480.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": false}, {"f": "每100g.GL", "v": 0.0, "ok": false}, {"f": "整份.热量kcal", "v": 403.0, "ok": true}, {"f": "整份.脂肪g", "v": 32.5, "ok": true}, {"f": "整份.钠mg", "v": 1248.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": false}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中 - 主要不确定来源：茄子吸油系数AF取值（2.8）基于文献中位数，实际受茄子品种、切块大小、预处理（是否盐渍脱水）影响；猪肉末在炒制过程中实际析出脂肪量未精确测量。", "warns": ["⚡ 接近每日AI（1500mg）"], "assumes": ["加油量假设：明确给出食用油30g，路径B为主计算。", "吸油系数取值及原因：茄子为高吸油食材，AF取2.8；猪肉末AF取0.6（致密肉类，高温析出脂肪）。", "汤汁去留：连汁全计（keep_sauce=true），汤汁/油脂全部计入成品。", "场景：餐馆，脂肪基线按炒类餐馆中位（7g/100g）做上限校验。", "GI修正：无可利用碳水（每100g成品碳水<1g），GI=0，GL=0。"]}, {"id": "v2_04", "name": "炸鸡排（挂糊）", "irr": 58, "logic": 67, "fields": [{"f": "成品总重g", "v": 210.0, "ok": true}, {"f": "每100g.热量kcal", "v": 310.0, "ok": true}, {"f": "每100g.脂肪g", "v": 18.5, "ok": true}, {"f": "每100g.碳水g", "v": 12.0, "ok": true}, {"f": "每100g.蛋白g", "v": 22.0, "ok": true}, {"f": "每100g.钠mg", "v": 120.0, "ok": false}, {"f": "每100g.GI", "v": 0.0, "ok": false}, {"f": "每100g.GL", "v": 0.0, "ok": false}, {"f": "整份.热量kcal", "v": 651.0, "ok": true}, {"f": "整份.脂肪g", "v": 38.9, "ok": true}, {"f": "整份.钠mg", "v": 252.0, "ok": false}, {"f": "整份.GL", "v": 0.0, "ok": false}], "lc": [{"n": "脂肪估算路径", "ok": false}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": false}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "B吸油", "conf": "中 - 吸油系数基于食材类别估算，实际吸油量受油温、挂糊厚度、油炸时间影响较大", "warns": [], "assumes": ["加油量已知：油炸用油500g，但实际被食材吸收的油量通过吸油系数计算，非全部计入成品", "吸油系数取值：鸡胸肉（致密肉类）AF=0.6，面包糠和面粉（淀粉/面制品）AF=2.2，鸡蛋液AF=0.8；方式系数MF=1.0（油炸浸没）", "该方式无汤汁，所有油脂全部计入成品", "场景：家庭，调味简单（仅假设基础盐和面包糠自带钠），钠含量较低", "无可利用碳水（面包糠/面粉/鸡蛋液在油炸后主要提供脂肪和少量蛋白，碳水含量极低，且鸡胸肉碳水为0），GI=0，GL=0"]}, {"id": "v2_05", "name": "香煎牛排", "irr": 92, "logic": 83, "fields": [{"f": "成品总重g", "v": 195.0, "ok": true}, {"f": "每100g.热量kcal", "v": 210.0, "ok": true}, {"f": "每100g.脂肪g", "v": 14.5, "ok": false}, {"f": "每100g.碳水g", "v": 0.5, "ok": true}, {"f": "每100g.蛋白g", "v": 20.0, "ok": true}, {"f": "每100g.钠mg", "v": 210.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 410.0, "ok": true}, {"f": "整份.脂肪g", "v": 28.3, "ok": true}, {"f": "整份.钠mg", "v": 410.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": false}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中 - 主要不确定来源：牛里脊在油煎过程中的实际吸油率与自身脂肪析出比例，以及盐的精确用量", "warns": [], "assumes": ["加油量假设：黄油10g全部用于烹饪，无其他油脂来源", "吸油系数取值及原因：牛里脊为致密肉类，吸油系数AF取0.6（高温油煎时表面结壳，且自身会析出部分脂肪）", "汤汁去留：该方式无汤汁，所有油脂和调味料全部计入成品", "场景：家庭，脂肪和钠水平按家庭基线估算", "无可利用碳水，GI=0，GL=0"]}, {"id": "v2_06", "name": "蜜汁烤鸡翅根", "irr": 100, "logic": 67, "fields": [{"f": "成品总重g", "v": 220.0, "ok": true}, {"f": "每100g.热量kcal", "v": 210.0, "ok": true}, {"f": "每100g.脂肪g", "v": 12.5, "ok": true}, {"f": "每100g.碳水g", "v": 4.0, "ok": true}, {"f": "每100g.蛋白g", "v": 20.0, "ok": true}, {"f": "每100g.钠mg", "v": 480.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 462.0, "ok": true}, {"f": "整份.脂肪g", "v": 27.5, "ok": true}, {"f": "整份.钠mg", "v": 1056.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": false}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": false}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中 - 鸡翅根烤制过程中脂肪析出与流失比例存在不确定性，实际脂肪留存率基于经验估算", "warns": [], "assumes": ["加油量已知（5g刷油），以路径B为主，路径A基线（烤/烧烤家庭中位约5g/100g）作为校验，偏差在合理范围内", "吸油系数：鸡翅根为肉类，致密且烤制过程中会析出自身脂肪，AF取0.6；刷油方式系数MF取0.2，实际留存油量=5g×0.6×0.2=0.6g，加上鸡翅根自带脂肪（约15g），总脂肪约15.6g，但烤制过程中鸡皮脂肪大量析出流失，实际留存约27.5g（含析出后部分附着），与路径A基线吻合", "该方式无汤汁，所有油脂和调味料全部计入成品", "场景为家庭，调味料用量适中，钠含量低于餐馆水平", "无可利用碳水（蜂蜜和酱油中碳水极少，且总量<1g/100g成品），GI=0，GL=0"]}, {"id": "v2_07", "name": "孜然烤羊肉串（餐馆）", "irr": 100, "logic": 67, "fields": [{"f": "成品总重g", "v": 188.0, "ok": true}, {"f": "每100g.热量kcal", "v": 210.0, "ok": true}, {"f": "每100g.脂肪g", "v": 12.5, "ok": true}, {"f": "每100g.碳水g", "v": 0.5, "ok": true}, {"f": "每100g.蛋白g", "v": 24.0, "ok": true}, {"f": "每100g.钠mg", "v": 640.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 395.0, "ok": true}, {"f": "整份.脂肪g", "v": 23.5, "ok": true}, {"f": "整份.钠mg", "v": 1203.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": false}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": false}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中高。加油量已知，吸油系数基于食材类别和方式合理取值，主要不确定来源为羊肉自身脂肪在烧烤过程中的析出比例", "warns": ["⚡ 接近每日AI（1500mg）"], "assumes": ["加油量已知：刷油10g，按路径B为主估算脂肪", "吸油系数：羊肉为致密肉类，AF取0.6（高温烧烤时表面结壳，吸油少，且自身脂肪部分析出）", "方式系数：烧烤（刷油）MF取0.2", "该方式无汤汁，所有油脂和调味料全部计入成品", "场景为餐馆，脂肪基线校验取烧烤组中位（约12g/100g），路径B结果（12.5g/100g）在合理范围内", "无可利用碳水（碳水<1g/100g成品），GI=0，GL=0"]}, {"id": "v2_08", "name": "红烧肉（收汁）", "irr": 100, "logic": 80, "fields": [{"f": "成品总重g", "v": 280.0, "ok": true}, {"f": "每100g.热量kcal", "v": 310.0, "ok": true}, {"f": "每100g.脂肪g", "v": 27.0, "ok": true}, {"f": "每100g.碳水g", "v": 4.5, "ok": true}, {"f": "每100g.蛋白g", "v": 12.0, "ok": true}, {"f": "每100g.钠mg", "v": 480.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 868.0, "ok": true}, {"f": "整份.脂肪g", "v": 75.6, "ok": true}, {"f": "整份.钠mg", "v": 1344.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": false}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中。主要不确定来源：五花肉肥瘦比例未知，导致自带脂肪量估算存在偏差；家庭烹饪中酱油/老抽品牌及钠含量差异大，钠估算基于调味料中位数。", "warns": ["⚡ 接近每日AI（1500mg）"], "assumes": ["加油量假设：明确使用食用油10g，路径B为主。", "吸油系数取值及原因：五花肉为致密肉类，吸油系数AF取0.6，且高温炖煮过程中会析出自身脂肪。", "汤汁去留：收汁不弃汤，keep_sauce=true，所有油脂和调味料全部计入成品。", "场景：家庭，脂肪基线按家庭红烧/焖/炖组中位数7.5g/100g成品进行校验。", "GI修正说明：无可利用碳水（碳水<1g/100g成品），GI=0，GL=0。"]}, {"id": "v2_09", "name": "五香卤牛腱（弃汤）", "irr": 100, "logic": 83, "fields": [{"f": "成品总重g", "v": 210.0, "ok": true}, {"f": "每100g.热量kcal", "v": 163.0, "ok": true}, {"f": "每100g.脂肪g", "v": 4.5, "ok": true}, {"f": "每100g.碳水g", "v": 1.2, "ok": true}, {"f": "每100g.蛋白g", "v": 28.0, "ok": true}, {"f": "每100g.钠mg", "v": 580.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 342.0, "ok": true}, {"f": "整份.脂肪g", "v": 9.5, "ok": true}, {"f": "整份.钠mg", "v": 1218.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": false}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中 - 钠含量基于调味料估算，实际弃汤流失率可能因个人操作而异", "warns": ["⚡ 接近每日AI（1500mg）"], "assumes": ["加油量假设：家庭卤制通常不额外加油，脂肪主要来自牛腱子自带（约4g/100g生重）", "吸油系数取值及原因：牛腱子为致密肉类，AF取0.6，几乎不额外吸油", "汤汁去留：弃汤，脂肪和钠随汤汁流失，流失率取15%（默认值）", "场景：家庭，调味料用量较餐馆保守", "无可利用碳水，GI=0，GL=0"]}, {"id": "v2_10", "name": "干煸四季豆（餐馆）", "irr": 75, "logic": 100, "fields": [{"f": "成品总重g", "v": 235.0, "ok": true}, {"f": "每100g.热量kcal", "v": 210.0, "ok": true}, {"f": "每100g.脂肪g", "v": 17.5, "ok": true}, {"f": "每100g.碳水g", "v": 8.0, "ok": true}, {"f": "每100g.蛋白g", "v": 6.5, "ok": true}, {"f": "每100g.钠mg", "v": 520.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": false}, {"f": "每100g.GL", "v": 0.0, "ok": false}, {"f": "整份.热量kcal", "v": 494.0, "ok": true}, {"f": "整份.脂肪g", "v": 41.1, "ok": true}, {"f": "整份.钠mg", "v": 1222.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": false}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中（加油量已知，但四季豆吸油系数AF=2.0为估算值，实际受脱水程度影响；钠含量基于酱油估算，未考虑餐馆额外加盐）", "warns": ["⚡ 接近每日AI（1500mg）"], "assumes": ["加油量已知（40g食用油），以路径B吸油模型为主估算", "四季豆为豆角类，吸油系数AF取2.0（高孔隙、干煸脱水后吸油显著）", "干煸/干锅方式系数MF取0.8（高温脱水、表面结壳但持续吸油）", "连汁全计（keep_sauce=true），汤汁/油脂全部计入成品", "场景为餐馆，调味钠先验偏高（酱油10g约含钠500mg，加上肉末自带钠，总钠约550mg，弃汤无流失）", "无可利用碳水（四季豆碳水约4g/100g，但整份碳水总量<20g，且GI不适用于豆角类蔬菜），GI=0，GL=0"]}, {"id": "v2_11", "name": "凉拌黄瓜木耳", "irr": 92, "logic": 100, "fields": [{"f": "成品总重g", "v": 171.0, "ok": true}, {"f": "每100g.热量kcal", "v": 42.0, "ok": true}, {"f": "每100g.脂肪g", "v": 2.9, "ok": true}, {"f": "每100g.碳水g", "v": 3.8, "ok": true}, {"f": "每100g.蛋白g", "v": 1.2, "ok": true}, {"f": "每100g.钠mg", "v": 380.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": false}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 72.0, "ok": true}, {"f": "整份.脂肪g", "v": 5.0, "ok": true}, {"f": "整份.钠mg", "v": 650.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "B吸油", "conf": "高。所有调味料和油脂用量已知，食材简单，计算路径清晰。", "warns": [], "assumes": ["加油量已知：香油5g，全部计入成品（凉拌无弃汤，连汁全计）", "吸油系数：凉拌方式下，食材不吸油，香油全部作为表面油脂计入成品", "汤汁去留：凉拌无汤汁，所有油脂和调味料全部计入成品", "场景：家庭，调味料用量按输入值计算", "无可利用碳水，GI=0，GL=0"]}, {"id": "v2_12", "name": "蔬菜沙拉（生食）", "irr": 83, "logic": 83, "fields": [{"f": "成品总重g", "v": 240.0, "ok": true}, {"f": "每100g.热量kcal", "v": 72.0, "ok": false}, {"f": "每100g.脂肪g", "v": 5.0, "ok": true}, {"f": "每100g.碳水g", "v": 3.5, "ok": true}, {"f": "每100g.蛋白g", "v": 1.2, "ok": true}, {"f": "每100g.钠mg", "v": 95.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 173.0, "ok": false}, {"f": "整份.脂肪g", "v": 12.0, "ok": true}, {"f": "整份.钠mg", "v": 228.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": false}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "B吸油", "conf": "高 - 用油量明确，食材简单，无复杂烹饪过程", "warns": [], "assumes": ["加油量已知：橄榄油8g，沙拉酱10g（含脂肪约6g），总用油约14g，全部计入成品（凉拌无弃汤）", "吸油系数：生食方式MF=0，食材不额外吸油，所有油脂来自调味料直接添加", "汤汁去留：该方式无汤汁，所有油脂/调味料全部计入成品", "场景：家庭，调味料用量相对保守", "无可利用碳水，GI=0，GL=0"]}, {"id": "v2_13", "name": "番茄炒蛋", "irr": 75, "logic": 83, "fields": [{"f": "成品总重g", "v": 288.0, "ok": true}, {"f": "每100g.热量kcal", "v": 87.0, "ok": true}, {"f": "每100g.脂肪g", "v": 5.8, "ok": true}, {"f": "每100g.碳水g", "v": 3.2, "ok": true}, {"f": "每100g.蛋白g", "v": 5.5, "ok": true}, {"f": "每100g.钠mg", "v": 278.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": false}, {"f": "每100g.GL", "v": 0.0, "ok": false}, {"f": "整份.热量kcal", "v": 251.0, "ok": true}, {"f": "整份.脂肪g", "v": 16.7, "ok": true}, {"f": "整份.钠mg", "v": 801.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": false}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": false}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "高。食材和用油量明确，烹饪方式简单，吸油系数取值有据可依，路径A基线校验通过。", "warns": [], "assumes": ["加油量假设：明确给出食用油15g，路径B为主", "吸油系数取值及原因：番茄（AF=1.0，含水高，表面光滑，吸油少），鸡蛋（AF=0.6，致密且高温下自身脂肪析出，吸油少），加权平均AF≈0.8", "汤汁去留：炒制过程短，无弃汤，所有油脂和调味料全部计入成品", "场景：家庭，脂肪基线按家庭炒菜中位（6g/100g）校验，路径B结果5.8g/100g在合理范围内", "GI修正说明：无可利用碳水（每100g成品碳水3.2g，但主要来自番茄中的糖分和添加糖，非淀粉类碳水，且总量<5g/100g，不触发GI计算），GI=0，GL=0"]}, {"id": "v2_14", "name": "醋熘土豆丝", "irr": 92, "logic": 83, "fields": [{"f": "成品总重g", "v": 225.0, "ok": true}, {"f": "每100g.热量kcal", "v": 105.0, "ok": true}, {"f": "每100g.脂肪g", "v": 4.8, "ok": true}, {"f": "每100g.碳水g", "v": 14.5, "ok": true}, {"f": "每100g.蛋白g", "v": 1.8, "ok": true}, {"f": "每100g.钠mg", "v": 340.0, "ok": true}, {"f": "每100g.GI", "v": 75.0, "ok": false}, {"f": "每100g.GL", "v": 10.9, "ok": true}, {"f": "整份.热量kcal", "v": 236.0, "ok": true}, {"f": "整份.脂肪g", "v": 10.8, "ok": true}, {"f": "整份.钠mg", "v": 765.0, "ok": true}, {"f": "整份.GL", "v": 24.5, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": false}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中高。加油量已知，吸油系数基于食材类别估算，GI修正基于文献方向性判断，数值存在一定不确定性", "warns": [], "assumes": ["加油量已知（12g），以路径B为主计算", "吸油系数取值：土豆切条/片，AF=1.8（根茎类切条，表面积大，吸油中等偏高）", "方式系数：炒，MF=0.35", "汤汁去向：炒制基本无汤汁，所有油脂和调味料全部计入成品", "场景：家庭，调味料用量按家庭习惯估算", "GI修正：基础GI≈70（土豆），因炒制（带油）形成少量脂质复合物，延缓消化，修正方向为→，最终GI≈75"]}, {"id": "v2_15", "name": "砂锅豆腐煲", "irr": 92, "logic": 60, "fields": [{"f": "成品总重g", "v": 330.0, "ok": true}, {"f": "每100g.热量kcal", "v": 105.0, "ok": true}, {"f": "每100g.脂肪g", "v": 5.8, "ok": true}, {"f": "每100g.碳水g", "v": 3.5, "ok": true}, {"f": "每100g.蛋白g", "v": 9.2, "ok": true}, {"f": "每100g.钠mg", "v": 420.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": false}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 347.0, "ok": true}, {"f": "整份.脂肪g", "v": 19.1, "ok": true}, {"f": "整份.钠mg", "v": 1386.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": false}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": false}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中高；主要不确定来源：豆腐吸油系数AF取值（1.8为估算中值，实际受豆腐老嫩影响），钠含量基于调味料估算（酱油/蚝油钠浓度取中值）", "warns": ["⚠️ 超每日AI（1500mg）"], "assumes": ["加油量假设：家庭场景，明确加油10g，路径B为主", "吸油系数取值及原因：豆腐（AF=1.8，多孔结构，炖煮中吸附油脂），猪肉末（AF=0.6，致密且高温析出脂肪），综合加权AF≈1.2", "汤汁去留：连汁全计（keep_sauce=true），汤汁/油脂全部计入成品", "场景：家庭，脂肪基线按家庭红烧/炖煮中位数7.5g/100g校验，路径B结果5.8g低于基线，合理（因豆腐吸油但肉末析油，整体脂肪不高）", "GI修正：无可利用碳水（每100g成品碳水<1g），GI=0，GL=0"]}, {"id": "v2_16", "name": "鸡肉竹笋汤（弃汤）", "irr": 75, "logic": 83, "fields": [{"f": "成品总重g", "v": 285.0, "ok": true}, {"f": "每100g.热量kcal", "v": 105.0, "ok": false}, {"f": "每100g.脂肪g", "v": 1.2, "ok": true}, {"f": "每100g.碳水g", "v": 1.5, "ok": true}, {"f": "每100g.蛋白g", "v": 22.0, "ok": false}, {"f": "每100g.钠mg", "v": 380.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 299.0, "ok": false}, {"f": "整份.脂肪g", "v": 3.4, "ok": true}, {"f": "整份.钠mg", "v": 1083.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": false}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "高。食材简单，烹饪方式明确，无复杂油脂或调味变量。", "warns": ["⚡ 接近每日AI（1500mg）"], "assumes": ["加油量假设：家庭水煮，未额外加油，脂肪仅来自食材自带（鸡胸肉约1.2g/100g，竹笋约0.2g/100g）", "吸油系数取值及原因：水煮方式系数MF=0.03，食材几乎不吸油，无需AF修正", "汤汁去留：弃汤，脂肪和钠随汤汁流失，流失率取15%（默认值）", "场景：家庭，调味简单，钠含量低于餐馆水平", "无可利用碳水，GI=0，GL=0"]}, {"id": "v2_17", "name": "麻辣小龙虾", "irr": 83, "logic": 100, "fields": [{"f": "成品总重g", "v": 490.0, "ok": false}, {"f": "每100g.热量kcal", "v": 105.0, "ok": true}, {"f": "每100g.脂肪g", "v": 6.5, "ok": true}, {"f": "每100g.碳水g", "v": 2.0, "ok": true}, {"f": "每100g.蛋白g", "v": 9.5, "ok": true}, {"f": "每100g.钠mg", "v": 480.0, "ok": false}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 515.0, "ok": true}, {"f": "整份.脂肪g", "v": 31.9, "ok": true}, {"f": "整份.钠mg", "v": 2352.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "高（加油量明确，食材吸油特性清晰，钠来源明确）", "warns": ["⚠️ 超防慢病PI（2000mg）"], "assumes": ["加油量已知（40g食用油），以路径B吸油模型为主计算", "吸油系数：小龙虾（虾类）AF=0.6（致密肉质，高温下自身脂肪析出，吸油少）", "方式系数：炖煮收汁 MF=0.35（类似炒，长时间炖煮但表面不结壳，吸油中等偏低）", "连汁全计，汤汁/油脂全部计入成品（keep_sauce=true）", "场景为餐馆，调味料用量（豆瓣酱、酱油）按餐馆中位钠密度估算", "无可利用碳水（小龙虾、调味料碳水极低，啤酒酒精挥发），GI=0，GL=0"]}, {"id": "v2_18", "name": "清蒸大闸蟹", "irr": 100, "logic": 100, "fields": [{"f": "成品总重g", "v": 320.0, "ok": true}, {"f": "每100g.热量kcal", "v": 95.0, "ok": true}, {"f": "每100g.脂肪g", "v": 2.4, "ok": true}, {"f": "每100g.碳水g", "v": 0.5, "ok": true}, {"f": "每100g.蛋白g", "v": 18.0, "ok": true}, {"f": "每100g.钠mg", "v": 180.0, "ok": true}, {"f": "每100g.GI", "v": 0.0, "ok": true}, {"f": "每100g.GL", "v": 0.0, "ok": true}, {"f": "整份.热量kcal", "v": 304.0, "ok": true}, {"f": "整份.脂肪g", "v": 7.7, "ok": true}, {"f": "整份.钠mg", "v": 576.0, "ok": true}, {"f": "整份.GL", "v": 0.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "A基线", "conf": "高。食材单一、烹饪方式简单（清蒸），无额外用油，调味料用量明确，主要不确定来源为蟹类品种间脂肪含量微小差异及弃汤流失率的精确值", "warns": [], "assumes": ["加油量假设：蒸制方式不额外用油，脂肪全部来自食材自带（大闸蟹自带脂肪约2.5g/100g）", "吸油系数取值及原因：无额外用油，不适用吸油系数修正", "汤汁去留：蒸制过程中产生的少量汁水（含蟹黄/蟹膏油脂及调味料）未计入成品，默认弃汤，脂肪和钠随汤汁流失，流失率取15%", "场景：家庭，调味料用量（姜、醋）较少，钠含量低于餐馆水平", "无可利用碳水，GI=0，GL=0"]}, {"id": "v2_19", "name": "桂圆莲子八宝粥", "irr": 100, "logic": 100, "fields": [{"f": "成品总重g", "v": 600.0, "ok": true}, {"f": "每100g.热量kcal", "v": 68.0, "ok": true}, {"f": "每100g.脂肪g", "v": 0.2, "ok": true}, {"f": "每100g.碳水g", "v": 15.8, "ok": true}, {"f": "每100g.蛋白g", "v": 1.2, "ok": true}, {"f": "每100g.钠mg", "v": 5.0, "ok": true}, {"f": "每100g.GI", "v": 70.0, "ok": true}, {"f": "每100g.GL", "v": 11.1, "ok": true}, {"f": "整份.热量kcal", "v": 408.0, "ok": true}, {"f": "整份.脂肪g", "v": 1.2, "ok": true}, {"f": "整份.钠mg", "v": 30.0, "ok": true}, {"f": "整份.GL", "v": 66.6, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": true}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "A基线", "conf": "中 - 主要不确定来源：食材自带脂肪微量，精确值依赖数据库；GI修正基于糊化效应估算，未考虑莲子/红枣中抗性淀粉的抵消作用", "warns": [], "assumes": ["加油量假设：本菜品无额外烹饪用油，脂肪仅来自食材自带（糯米、莲子、桂圆干、红枣中微量），路径A基线取炖煮类家庭中位数2.37g/100g，但实际因无油且食材自带脂肪极低，故大幅下调至0.2g/100g", "吸油系数取值及原因：无烹饪用油，不适用吸油系数修正", "汤汁去留：连汁全计（炖煮收汁，keep_sauce=true），汤汁/油脂全部计入成品", "场景：家庭，调味简单，钠含量极低", "GI修正：基础GI≈65（糯米≈87，莲子≈50，桂圆干≈60，红枣≈55，加权平均约65），因长时间炖煮导致淀粉充分糊化，修正方向为↑，最终GI≈70"]}, {"id": "v2_20", "name": "椒香蛋炒饭", "irr": 100, "logic": 83, "fields": [{"f": "成品总重g", "v": 330.0, "ok": true}, {"f": "每100g.热量kcal", "v": 175.0, "ok": true}, {"f": "每100g.脂肪g", "v": 5.2, "ok": true}, {"f": "每100g.碳水g", "v": 27.0, "ok": true}, {"f": "每100g.蛋白g", "v": 5.5, "ok": true}, {"f": "每100g.钠mg", "v": 240.0, "ok": true}, {"f": "每100g.GI", "v": 73.0, "ok": true}, {"f": "每100g.GL", "v": 19.7, "ok": true}, {"f": "整份.热量kcal", "v": 578.0, "ok": true}, {"f": "整份.脂肪g", "v": 17.2, "ok": true}, {"f": "整份.钠mg", "v": 792.0, "ok": true}, {"f": "整份.GL", "v": 65.0, "ok": true}], "lc": [{"n": "脂肪估算路径", "ok": true}, {"n": "AF加成", "ok": true}, {"n": "汤汁处理", "ok": false}, {"n": "高钠预警", "ok": true}, {"n": "GI修正", "ok": true}, {"n": "关键假设数量", "ok": true}], "path": "合并（B吸油 + A基线校验）", "conf": "中 - 米饭吸油系数为估算值，实际吸油量受米饭干湿程度影响较大", "warns": [], "assumes": ["加油量已知（10g食用油），以路径B为主，路径A基线（家庭炒菜约6g/100g）校验，偏差在合理范围内", "吸油系数：米饭（熟）AF=2.0（淀粉类高吸油），鸡蛋AF=0.6（致密蛋白，吸油少），葱花忽略不计", "方式系数MF=0.35（一般热炒），成品脂肪=食材自带脂肪(鸡蛋约5.4g) + 用油10g × 加权平均AF(约1.7) × MF(0.35) ≈ 5.4 + 5.95 ≈ 11.35g，因米饭吸油后部分油脂仍附着，最终估算整份脂肪17.2g", "该方式无汤汁，所有油脂和调味料全部计入成品", "场景为家庭，钠含量按家庭炒菜中位估算（约240mg/100g），低于餐馆水平", "GI修正：基础GI≈83（精白米饭），因炒制过程中米饭再次加热并加入油脂，油脂与淀粉形成复合物延缓消化，修正方向为↓，最终GI≈73"]}];
+
+// Sort by composite score = 0.45*IRR + 0.30*logic + 0.15
+D.sort((a,b) => (0.45*b.irr+0.30*b.logic) - (0.45*a.irr+0.30*a.logic));
+
+// Rank table
+let rankHTML = '';
+D.forEach((c,i) => {
+  const composite = Math.round(0.45*c.irr + 0.30*c.logic + 25);
+  const rank = i+1;
+  const rankClass = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'';
+  const irrColor = c.irr>=90?'var(--green)':c.irr>=70?'var(--orange)':'var(--red)';
+  const logicColor = c.logic>=80?'var(--green)':c.logic>=60?'var(--orange)':'var(--red)';
+  rankHTML += `<tr>
+    <td><span class="rank-badge ${rankClass}">${rank}</span></td>
+    <td><strong>${c.name}</strong></td>
+    <td><span style="color:${irrColor};font-weight:700">${c.irr}%</span></td>
+    <td><span style="color:${logicColor};font-weight:700">${c.logic}%</span></td>
+    <td><span style="color:var(--purple);font-weight:600">${composite}%</span></td>
+    <td style="font-size:11px;color:var(--t2)">${c.path}</td>
+    <td style="font-size:11px;color:var(--t2)">${c.conf}</td>
+  </tr>`;
+});
+document.getElementById('rank-table').innerHTML = rankHTML;
+
+// Case cards
+let cardsHTML = '';
+D.forEach((c,i) => {
+  const irrColor = c.irr>=90?'var(--green)':c.irr>=70?'var(--orange)':'var(--red)';
+  const logicColor = c.logic>=80?'var(--green)':c.logic>=60?'var(--orange)':'var(--red)';
+  const barColor = c.irr>=90?'var(--green)':c.irr>=70?'var(--orange)':'var(--red)';
+
+  // Field rows
+  let fieldsHTML = '';
+  c.fields.forEach(f => {
+    fieldsHTML += `<div class="field-row">
+      <span class="fname">${f.f}</span>
+      <span class="fval">${f.v}</span>
+      <span class="fstatus"><span class="dot ${f.ok?'green':'red'}"></span></span>
+    </div>`;
+  });
+
+  // Logic checks
+  let logicHTML = '';
+  c.lc.forEach(l => {
+    logicHTML += `<div class="field-row">
+      <span class="fname">${l.n}</span>
+      <span class="fstatus"><span class="dot ${l.ok?'green':'red'}"></span></span>
+    </div>`;
+  });
+
+  // Warning tags
+  let warnTags = '';
+  c.warns.forEach(w => {
+    warnTags += `<span class="tag warn">⚠ ${w.substring(0,30)}</span>`;
+  });
+
+  cardsHTML += `<div class="case-card" onclick="this.classList.toggle('open')" style="--bar-color:${barColor}">
+    <div class="header-row">
+      <div>
+        <div class="name">#${i+1} ${c.name}</div>
+        <div class="id">${c.id} · ${c.conf}</div>
+      </div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="num" style="color:${irrColor}">${c.irr}%</div><div class="lbl">IRR</div>
+        <div class="progress-wrap"><div class="progress-bar" style="width:${c.irr}%;background:${irrColor}"></div></div>
+      </div>
+      <div class="metric"><div class="num" style="color:${logicColor}">${c.logic}%</div><div class="lbl">逻辑</div>
+        <div class="progress-wrap"><div class="progress-bar" style="width:${c.logic}%;background:${logicColor}"></div></div>
+      </div>
+    </div>
+    <div class="tags">${warnTags}</div>
+    <div class="detail">
+      <p style="font-weight:600;margin-bottom:8px;color:var(--t2);font-size:11px">📊 数值字段</p>
+      ${fieldsHTML}
+      <p style="font-weight:600;margin:12px 0 8px;color:var(--t2);font-size:11px">🧠 逻辑检查</p>
+      ${logicHTML}
+    </div>
+  </div>`;
+});
+document.getElementById('case-grid').innerHTML = cardsHTML;
+</script>
+</body></html>

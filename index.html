@@ -10,6 +10,18 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // 还原 404.html 记下的 SPA 深链路径
+      (function () {
+        var r = sessionStorage.getItem('spa-redirect');
+        if (r) {
+          sessionStorage.removeItem('spa-redirect');
+          if (r !== location.pathname + location.search + location.hash) {
+            history.replaceState(null, '', r);
+          }
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
