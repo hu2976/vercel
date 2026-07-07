@@ -13,6 +13,13 @@ I enjoy deep chatting and taking walks. I keep an eye on the development of nutr
 
 In my spare time, I will update my various hobbies and achievements here. I believe that both you who are browsing my page and I who created it will have the future we envision.`,
 
+  // 个人简介中文（About 模块悬停时浮现）
+  bioZh: `你好，我是胡京翰，一个爱上冰美式的人。欢迎来到我的世界。
+
+我喜欢深度的交谈与漫步。我关注营养与科技的发展，热爱探索一切新鲜事物。因为我相信，学习是一生的旅程，而好奇心让生活始终鲜活。
+
+闲暇时，我会在这里更新我各种各样的爱好与成就。我相信，正在浏览这个页面的你，和创建它的我，都会拥有我们所憧憬的未来。`,
+
   // Social links
   social: {
     github: "https://github.com/hu2976",

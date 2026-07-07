@@ -15,6 +15,7 @@ export default function Home() {
   const [showEmail, setShowEmail] = useState(false);
   const [copied, setCopied] = useState(false);
   const [githubHover, setGithubHover] = useState(false);
+  const [bioHover, setBioHover] = useState(false);
 
   const handleContact = () => {
     if (!showEmail) {
@@ -112,12 +113,19 @@ export default function Home() {
               className="text-2xl font-bold text-gray-900 dark:text-white cursor-default"
             />
           </div>
-          <div className="rounded-2xl border border-gray-200 bg-gray-50/50 p-6 dark:border-gray-800 dark:bg-gray-900/50 sm:p-8">
-            {config.bio.split('\n').map((paragraph, i) => (
-              <p key={i} className="mb-3 text-gray-700 dark:text-gray-300 leading-relaxed last:mb-0">
-                {paragraph}
-              </p>
-            ))}
+          <div
+            onMouseEnter={() => setBioHover(true)}
+            onMouseLeave={() => setBioHover(false)}
+            className="rounded-2xl border border-gray-200 bg-gray-50/50 p-6 dark:border-gray-800 dark:bg-gray-900/50 sm:p-8 cursor-default"
+          >
+            {(bioHover ? config.bioZh : config.bio)
+              .split('\n')
+              .filter((paragraph) => paragraph.trim() !== '')
+              .map((paragraph, i) => (
+                <p key={i} className="mb-3 text-gray-700 dark:text-gray-300 leading-relaxed last:mb-0">
+                  {paragraph}
+                </p>
+              ))}
           </div>
         </div>
       </section>
