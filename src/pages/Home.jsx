@@ -37,17 +37,26 @@ export default function Home() {
             {config.name.charAt(0)}
           </div>
 
-          <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl">
-            {config.name}
-          </h1>
+          <HoverText
+            as="h1"
+            en={config.name}
+            zh={config.nameZh}
+            className="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl lg:text-6xl cursor-default"
+          />
 
-          <p className="mx-auto mb-4 max-w-lg text-lg text-gray-500 dark:text-gray-400">
-            {config.title}
-          </p>
+          <HoverText
+            as="p"
+            en={config.title}
+            zh={config.titleZh}
+            className="mx-auto mb-4 max-w-lg text-lg text-gray-500 dark:text-gray-400 cursor-default"
+          />
 
-          <p className="mx-auto mb-8 max-w-md text-gray-600 dark:text-gray-300">
-            {config.tagline}
-          </p>
+          <HoverText
+            as="p"
+            en={config.tagline}
+            zh={config.taglineZh}
+            className="mx-auto mb-8 max-w-md text-gray-600 dark:text-gray-300 cursor-default"
+          />
 
           {/* CTA 按钮 */}
           <div className="flex flex-wrap items-center justify-center gap-4">

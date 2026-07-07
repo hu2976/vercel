@@ -7,7 +7,9 @@ const config = {
   name: "Hujinghan",
   nameZh: "胡静函",
   title: "Developer / Tech Enthusiast / Nutrition Enthusiast",
+  titleZh: "开发者 / 科技爱好者 / 营养爱好者",
   tagline: "Building interesting things with code",
+  taglineZh: "用代码创造有趣的东西",
   bio: `Hi, I'm Hu Jinghan, a person who falls in love with iced Americano. Welcome to my world.
 
 I enjoy deep chatting and taking walks. I keep an eye on the development of nutrition and tech, and I love exploring all new things. Because I believe that learning is a lifelong process, and curiosity keeps life vibrant.
