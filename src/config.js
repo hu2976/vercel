@@ -19,17 +19,36 @@ In my spare time, I will update my various hobbies and achievements here. I beli
     email: "13521752976@163.com",
   },
 
-  // Skills
+  // Skills —（en 英文默认展示，zh 悬停时浮现）
   skills: [
-    "Knowledge of Nutrition",
-    "English",
-    "Public Speaking",
-    "Hosting Interviews",
-    "Copywriting",
-    "Event Planning",
-    "Interdepartmental Communication",
-    "Innovative Thinking",
-    "Vibe Coding",
+    { en: "Knowledge of Nutrition", zh: "营养学知识" },
+    { en: "English", zh: "英语" },
+    { en: "Public Speaking", zh: "公开演讲" },
+    { en: "Hosting Interviews", zh: "主持采访" },
+    { en: "Copywriting", zh: "文案写作" },
+    { en: "Event Planning", zh: "活动策划" },
+    { en: "Interdepartmental Communication", zh: "跨部门沟通" },
+    { en: "Innovative Thinking", zh: "创新思维" },
+    { en: "Vibe Coding", zh: "氛围编程" },
+  ],
+
+  // Rewards / Honors —（en 英文默认展示，zh 悬停时浮现）
+  rewards: [
+    { en: "TEDx speaker", zh: "TEDx 演讲者" },
+    { en: "Four invention patents", zh: "四项发明专利" },
+    { en: "First-class Scholarship", zh: "一等奖学金" },
+    {
+      en: "The Special Prize, First Prize and Second Prize of the National Challenge Cup Competition",
+      zh: "全国“挑战杯”竞赛特等奖、一等奖及二等奖",
+    },
+    {
+      en: "First place in the Beijing Nutritionist Skills Competition",
+      zh: "北京市营养师技能大赛第一名",
+    },
+    {
+      en: "More than ten awards at the provincial level or above……",
+      zh: "十余项省部级及以上奖项……",
+    },
   ],
 
   // Projects

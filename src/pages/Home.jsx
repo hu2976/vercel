@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import config from '../config'
-import { Mail, ArrowRight, BookOpen, Code, Sparkles, Copy, Check } from 'lucide-react'
+import { Mail, ArrowRight, BookOpen, Code, Sparkles, Copy, Check, LayoutGrid, Trophy } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import HoverText from '../components/HoverText'
 
 // 品牌图标（lucide-react 不包含，使用 SVG）
 const GithubIcon = () => (
@@ -13,6 +14,7 @@ const GithubIcon = () => (
 export default function Home() {
   const [showEmail, setShowEmail] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [githubHover, setGithubHover] = useState(false);
 
   const handleContact = () => {
     if (!showEmail) {
@@ -56,15 +58,25 @@ export default function Home() {
               Blog
               <ArrowRight size={16} />
             </Link>
+            <Link
+              to="/works"
+              className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-6 py-3 text-sm font-medium text-white shadow-md hover:bg-primary-700 transition-colors"
+            >
+              <LayoutGrid size={16} />
+              Work
+              <ArrowRight size={16} />
+            </Link>
             {config.social.github && (
               <a
                 href={config.social.github}
                 target="_blank"
                 rel="noopener noreferrer"
+                onMouseEnter={() => setGithubHover(true)}
+                onMouseLeave={() => setGithubHover(false)}
                 className="inline-flex items-center gap-2 rounded-full border border-gray-300 dark:border-gray-700 px-6 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 <GithubIcon />
-                GitHub
+                {githubHover ? "hu2976" : "GitHub"}
               </a>
             )}
             {config.social.email && (
@@ -93,7 +105,12 @@ export default function Home() {
         <div className="mx-auto max-w-2xl">
           <div className="mb-8 flex items-center gap-3">
             <Sparkles size={24} className="text-primary-500" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">About</h2>
+            <HoverText
+              as="h2"
+              en="About"
+              zh="关于"
+              className="text-2xl font-bold text-gray-900 dark:text-white cursor-default"
+            />
           </div>
           <div className="rounded-2xl border border-gray-200 bg-gray-50/50 p-6 dark:border-gray-800 dark:bg-gray-900/50 sm:p-8">
             {config.bio.split('\n').map((paragraph, i) => (
@@ -110,23 +127,53 @@ export default function Home() {
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 flex items-center gap-3">
             <Code size={24} className="text-primary-500" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Skills</h2>
+            <HoverText
+              as="h2"
+              en="Skills"
+              zh="技能"
+              className="text-2xl font-bold text-gray-900 dark:text-white cursor-default"
+            />
           </div>
           <div className="flex flex-wrap gap-2">
             {config.skills.map((skill) => (
-              <span
-                key={skill}
+              <HoverText
+                key={skill.en}
+                en={skill.en}
+                zh={skill.zh}
                 className="rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-primary-300 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-default"
-              >
-                {skill}
-              </span>
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 荣誉 */}
+      <section className="px-4 py-16 sm:py-20">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-8 flex items-center gap-3">
+            <Trophy size={24} className="text-primary-500" />
+            <HoverText
+              as="h2"
+              en="Reward"
+              zh="荣誉"
+              className="text-2xl font-bold text-gray-900 dark:text-white cursor-default"
+            />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {config.rewards.map((reward) => (
+              <HoverText
+                key={reward.en}
+                en={reward.en}
+                zh={reward.zh}
+                className="flex items-start gap-3 rounded-2xl border border-gray-200 bg-gray-50/50 p-4 text-gray-700 dark:border-gray-800 dark:bg-gray-900/50 dark:text-gray-300 hover:border-primary-300 dark:hover:border-primary-600 hover:text-primary-600 dark:hover:text-primary-400 transition-colors cursor-default leading-relaxed"
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* 项目 */}
-      <section className="px-4 py-16 sm:py-20">
+      <section className="px-4 py-16 sm:py-20 bg-gray-50/50 dark:bg-gray-900/30">
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 flex items-center gap-3">
             <Code size={24} className="text-primary-500" />
@@ -162,7 +209,7 @@ export default function Home() {
       </section>
 
       {/* 博客预览 */}
-      <section className="px-4 py-16 sm:py-20 bg-gray-50/50 dark:bg-gray-900/30">
+      <section className="px-4 py-16 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
           <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-white">Latest Posts</h2>
           <p className="mb-8 text-gray-500 dark:text-gray-400">Sharing tech insights and life updates</p>
