@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
+import config from '../config'
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -9,12 +11,18 @@ const navLinks = [
 
 export default function Header({ dark, onToggleTheme }) {
   const location = useLocation();
+  const [nameHover, setNameHover] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200/60 bg-white/80 backdrop-blur-md dark:border-gray-800/60 dark:bg-gray-950/80">
       <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-        <Link to="/" className="text-xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-          hujinghan
+        <Link
+          to="/"
+          onMouseEnter={() => setNameHover(true)}
+          onMouseLeave={() => setNameHover(false)}
+          className="text-xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+        >
+          {nameHover ? config.nameZh : 'hujinghan'}
         </Link>
 
         <nav className="flex items-center gap-1">
