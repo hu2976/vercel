@@ -73,6 +73,14 @@ In my spare time, I will update my various hobbies and achievements here. I beli
   // Work Set — 作品集。file 指向 public/works 下的静态页面，在 /works/:slug 内嵌展示
   works: [
     {
+      slug: "global-mortality-race",
+      title: "近30年全球全因死亡率 · 动态排行",
+      description: "基于 IHME 全球疾病负担研究（GBD 2023）的年龄标准化全因死亡率，1994–2023 逐年 Top 15 国家的条形图竞赛动画：按地区着色、含国旗、名次与地区构成变化，直观呈现撒哈拉以南非洲与冲突国家长期高居榜首。数据经 Our World in Data 指标接口获取，纯前端单文件实现。",
+      tags: ["Data Viz", "GBD", "Bar Chart Race"],
+      file: "/works/files/global-mortality-race.html",
+      date: "2026-07-16",
+    },
+    {
       slug: "nutrition-engine-eval",
       title: "食物营养估算引擎 · 评测仪表盘",
       description: "一套针对「食物营养估算」大模型能力的评测方案：覆盖多种烹饪方式对热量的影响，含测试用例、真值标注与自动评分，最终汇总成可交互的评测看板。",
