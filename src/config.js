@@ -73,6 +73,14 @@ In my spare time, I will update my various hobbies and achievements here. I beli
   // Work Set — 作品集。file 指向 public/works 下的静态页面，在 /works/:slug 内嵌展示
   works: [
     {
+      slug: "nutrition-exam-practice",
+      title: "2026 注册营养师 · 考点配套练习",
+      description: "把「注册营养师考试宝典」全 159 个考点的配套习题整理成一套可交互刷题页：按 7 大板块（营养学基础、食物营养价值、特殊人群与环境营养、公共营养、临床营养、营养与慢性病、食品卫生）分类，共 730 道真题。默认只显示题干与选项，点「查看答案及解析」逐题展开答案与解析；选项可点选，展开后自动标注正误。纯前端单文件实现。",
+      tags: ["Nutrition", "Quiz", "练习题"],
+      file: "/works/files/nutrition-exam-practice.html",
+      date: "2026-07-22",
+    },
+    {
       slug: "global-mortality-race",
       title: "近30年全球全因死亡率 · 动态排行",
       description: "基于 IHME 全球疾病负担研究（GBD 2023）的年龄标准化全因死亡率，1994–2023 逐年 Top 15 国家的条形图竞赛动画：按地区着色、含国旗、名次与地区构成变化，直观呈现撒哈拉以南非洲与冲突国家长期高居榜首。数据经 Our World in Data 指标接口获取，纯前端单文件实现。",
