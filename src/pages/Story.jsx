@@ -98,45 +98,54 @@ function LayoutCentered({ story }) {
   )
 }
 
-// 竖排图片列：一列往下堆，图片按原始比例完整显示
-function VerticalStrip({ items }) {
+// 倾斜重叠的照片拼贴（拍立得风）：大小不一、旋转、互相叠压
+const COLLAGE = [
+  { l: '0%',  t: 18,  w: '48%', h: 250, r: -5, z: 10 },
+  { l: '44%', t: 0,   w: '44%', h: 215, r: 6,  z: 20 },
+  { l: '5%',  t: 232, w: '42%', h: 210, r: 4,  z: 30 },
+  { l: '45%', t: 210, w: '46%', h: 240, r: -4, z: 20 },
+  { l: '28%', t: 158, w: '34%', h: 175, r: 8,  z: 40 },
+]
+function PhotoCollage({ items }) {
+  const pics = items.slice(0, 5)
   return (
-    <div className="flex flex-col gap-3">
-      {items.map((it, k) => (
-        <div key={k} className="group overflow-hidden rounded-xl shadow-md">
-          <ImageFrame
-            src={it.src}
-            label=""
-            className="block w-full transition-transform duration-500 group-hover:scale-[1.03]"
-            imgClassName="block h-auto w-full"
-            placeholderClassName="aspect-[4/3]"
-          />
-        </div>
-      ))}
-    </div>
+    <>
+      {/* 桌面：倾斜重叠拼贴 */}
+      <div className="relative hidden h-[490px] lg:block">
+        {pics.map((it, i) => {
+          const c = COLLAGE[i]
+          return (
+            <div
+              key={i}
+              className="group absolute rounded-lg bg-white p-1.5 shadow-xl ring-1 ring-black/5 transition-[z-index] hover:z-50"
+              style={{ left: c.l, top: c.t, width: c.w, height: c.h, transform: `rotate(${c.r}deg)`, zIndex: c.z }}
+            >
+              <div className="h-full w-full overflow-hidden rounded">
+                <ImageFrame src={it.src} label="" className="h-full w-full transition-transform duration-500 group-hover:scale-105" imgClassName="h-full w-full object-cover" />
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      {/* 移动端：简单网格兜底 */}
+      <div className="grid grid-cols-2 gap-3 lg:hidden">
+        {pics.map((it, i) => (
+          <div key={i} className="overflow-hidden rounded-lg shadow-md">
+            <ImageFrame src={it.src} label="" className="aspect-[4/3] w-full" imgClassName="h-full w-full object-cover" placeholderClassName="aspect-[4/3]" />
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
 
-/* 布局 B/C —— 半包围：图片包在文字的「上方 + 一侧」，把文字裹在角落
-   sideVertical: 侧翼用竖排（适合长文，填满侧边空白）；topN: 上方横幅张数 */
-function LayoutWrap({ story, side = 'right', topN, sideVertical = false }) {
-  const items = gallery(story)
-  const tN = topN ?? Math.ceil(items.length / 2)
-  const top = items.slice(0, tN)
-  const rest = items.slice(tN)
+/* 布局 B/C —— 倾斜重叠拼贴 + 一侧文字，图文居中协调 */
+function LayoutCollage({ story, side = 'right' }) {
   const text = <Paragraphs paragraphs={story.paragraphs} />
-  const sideWall = sideVertical ? <VerticalStrip items={rest} /> : <JustifiedGallery items={rest} targetHeight={140} />
-  const cols = sideVertical
-    ? (side === 'right' ? 'lg:grid-cols-[1.25fr_0.75fr]' : 'lg:grid-cols-[0.75fr_1.25fr]')
-    : 'lg:grid-cols-2'
+  const collage = <PhotoCollage items={gallery(story)} />
   return (
-    <div className="mx-auto max-w-4xl">
-      {/* 上方横幅照片墙 */}
-      <JustifiedGallery items={top} targetHeight={180} className="mb-4" />
-      {/* 文字 + 一侧照片墙（半包围的“侧翼”） */}
-      <div className={`grid items-start gap-6 lg:gap-8 ${cols}`}>
-        {side === 'right' ? <>{text}{sideWall}</> : <>{sideWall}{text}</>}
-      </div>
+    <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+      {side === 'right' ? <>{text}{collage}</> : <>{collage}{text}</>}
     </div>
   )
 }
@@ -157,8 +166,8 @@ function LayoutTopBottom({ story }) {
 function StoryBody({ story }) {
   switch (story.slug) {
     case 'spotlight': return <LayoutCentered story={story} />
-    case 'partner': return <LayoutWrap story={story} side="right" />
-    case 'flavor-lab': return <LayoutWrap story={story} side="left" topN={2} sideVertical />
+    case 'partner': return <LayoutCollage story={story} side="right" />
+    case 'flavor-lab': return <LayoutCollage story={story} side="left" />
     case 'intern': return <LayoutTopBottom story={story} />
     default: return <Paragraphs paragraphs={story.paragraphs} className="mx-auto max-w-2xl" />
   }
