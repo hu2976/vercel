@@ -369,13 +369,14 @@ h1, h2, h3, h4 {
 }
 .portrait-blob {
   position: absolute;
-  inset: 6%;
+  inset: 4%;
   border-radius: 46% 54% 58% 42% / 48% 44% 56% 52%;
   background-image: linear-gradient(140deg, var(--accent), var(--accent-2));
-  opacity: 0.9;
-  filter: blur(2px);
+  opacity: 0.55;
+  filter: blur(26px);
   animation: blobMorph 12s ease-in-out infinite;
 }
+.dark .portrait-blob { opacity: 0.5; }
 @keyframes blobMorph {
   0%, 100% { border-radius: 46% 54% 58% 42% / 48% 44% 56% 52%; }
   50% { border-radius: 56% 44% 42% 58% / 56% 58% 42% 44%; }
