@@ -66,12 +66,19 @@
 /* ============================================================
    基础
    ============================================================ */
+:root {
+  --font-sans: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Segoe UI", Roboto, "Helvetica Neue", "Microsoft YaHei", Arial, sans-serif;
+}
+
 body {
   background-color: var(--bg);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
-  font-family: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  letter-spacing: 0.005em;
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
@@ -79,10 +86,16 @@ html {
   scroll-behavior: smooth;
 }
 
+h1, h2, h3, h4 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
 /* 花体字（Latin 用 Dancing Script，中文用 Ma Shan Zheng，按字形自动回退） */
 .font-script {
   font-family: "Dancing Script", "Ma Shan Zheng", "STKaiti", "KaiTi", cursive;
   font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 /* ============================================================
@@ -202,12 +215,186 @@ html {
 /* 泡泡浮动动画 */
 @keyframes floaty {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-14px); }
 }
-.floaty { animation: floaty 5s ease-in-out infinite; }
+.floaty { animation: floaty 6s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   .floaty { animation: none; }
+}
+
+/* ============================================================
+   仿真气泡（四维故事）—— 磨砂玻璃质感 + 高光 + 虹彩边
+   颜色通过内联 --b1 / --b2 传入
+   ============================================================ */
+.bubble {
+  position: relative;
+  border-radius: 9999px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 42%),
+    radial-gradient(circle at 74% 80%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(140deg, var(--b1, #5b8cff), var(--b2, #7b5bff));
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 2px 14px rgba(255, 255, 255, 0.65),
+    inset 5px -10px 26px rgba(0, 0, 0, 0.14),
+    0 18px 42px -14px var(--b1, #5b8cff);
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.4s ease;
+}
+/* 镜面高光 */
+.bubble::after {
+  content: "";
+  position: absolute;
+  top: 11%;
+  left: 15%;
+  width: 38%;
+  height: 28%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 72%);
+  filter: blur(1.5px);
+  pointer-events: none;
+}
+.bubble-emoji {
+  font-size: 2.4rem;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+  transition: transform 0.4s ease;
+}
+.bubble-wrap:hover .bubble {
+  transform: scale(1.13);
+  box-shadow:
+    inset 0 2px 16px rgba(255, 255, 255, 0.7),
+    inset 5px -10px 28px rgba(0, 0, 0, 0.16),
+    0 30px 70px -16px var(--b1, #5b8cff);
+}
+.bubble-wrap:hover .bubble-emoji { transform: scale(1.12) rotate(-4deg); }
+/* 悬停浮现的简介气泡 */
+.bubble-caption {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.bubble-wrap:hover .bubble-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   技能标签墙 —— 大小错落，悬停放大
+   ============================================================ */
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-soft);
+  font-weight: 600;
+  line-height: 1;
+  cursor: default;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1),
+    color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.skill-tag:hover {
+  transform: scale(1.18) rotate(-1deg);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: var(--glow), 0 8px 26px -12px var(--accent);
+  z-index: 2;
+}
+
+/* ============================================================
+   奖项卡 —— 渐变奖章徽标 + 左侧高光条
+   ============================================================ */
+.award-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  overflow: hidden;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.award-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-image: linear-gradient(var(--accent), var(--accent-2));
+}
+.award-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--glow), 0 16px 40px -20px rgba(0, 0, 0, 0.3);
+}
+.award-badge {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 0.9rem;
+  color: #fff;
+  font-weight: 800;
+  background-image: linear-gradient(140deg, var(--accent), var(--accent-2));
+  box-shadow: 0 8px 20px -8px var(--accent);
+}
+.award-card.featured {
+  grid-column: 1 / -1;
+  background-image: linear-gradient(120deg, var(--accent-soft), transparent 70%);
+}
+
+/* ============================================================
+   人像舞台 —— 抠图照片悬浮在柔和光斑上
+   ============================================================ */
+.portrait-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.portrait-blob {
+  position: absolute;
+  inset: 6%;
+  border-radius: 46% 54% 58% 42% / 48% 44% 56% 52%;
+  background-image: linear-gradient(140deg, var(--accent), var(--accent-2));
+  opacity: 0.9;
+  filter: blur(2px);
+  animation: blobMorph 12s ease-in-out infinite;
+}
+@keyframes blobMorph {
+  0%, 100% { border-radius: 46% 54% 58% 42% / 48% 44% 56% 52%; }
+  50% { border-radius: 56% 44% 42% 58% / 56% 58% 42% 44%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait-blob { animation: none; }
+}
+
+/* 联系方式小胶囊 */
+.contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-soft);
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.22s ease;
+}
+.contact-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: var(--glow);
 }
 
 /* ============================================================

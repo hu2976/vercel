@@ -15,8 +15,9 @@ export default function Header({ dark, onToggleTheme }) {
       style={{ borderColor: 'var(--border)', backgroundColor: 'color-mix(in srgb, var(--bg) 82%, transparent)' }}
     >
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5">
-        <Link to="/" className="font-script text-2xl leading-none text-body" style={{ letterSpacing: '0.02em' }}>
-          {config.nameZh}
+        <Link to="/" className="flex items-center gap-2 text-lg font-extrabold tracking-tight text-body">
+          <span className="grid h-7 w-7 place-items-center rounded-lg text-sm text-white" style={{ backgroundImage: 'linear-gradient(140deg, var(--accent), var(--accent-2))' }}>胡</span>
+          <span>胡静函</span>
         </Link>
 
         <nav className="flex items-center gap-1 sm:gap-2">
