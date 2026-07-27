@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import config from '../config'
 import ImageFrame from '../components/ImageFrame'
@@ -13,33 +14,61 @@ const bubbleGradients = {
 const norm = (item) => (typeof item === 'string' ? { src: item, ar: 1.25 } : { src: item?.src || null, ar: item?.ar || 1.25 })
 const gallery = (story) => (story.gallery || []).map(norm)
 
-// 按宽高比把图片平衡分配到 cols 列（每张放进当前最矮的一列 → 列底对齐）
-function distribute(items, cols) {
-  const columns = Array.from({ length: cols }, () => ({ items: [], h: 0 }))
-  for (const it of items) {
-    let m = 0
-    for (let i = 1; i < cols; i++) if (columns[i].h < columns[m].h) m = i
-    columns[m].items.push(it)
-    columns[m].h += it.ar + 0.06 // 0.06 ≈ gap 归一化
-  }
-  return columns
-}
+// Justified 相册：每行等高，按真实比例分配不同宽度（大小不一），整行撑满 → 边齐无缺角、不裁切
+function JustifiedGallery({ items, targetHeight = 200, gap = 10, className = '' }) {
+  const ref = useRef(null)
+  const [width, setWidth] = useState(0)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    setWidth(el.clientWidth)
+    const ro = new ResizeObserver((entries) => setWidth(entries[0].contentRect.width))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
-// 平衡瀑布流：图片按原始比例完整显示（不裁切），列底对齐
-function Collage({ items, cols = 2, className = '' }) {
-  const columns = distribute(items, cols)
+  const rows = useMemo(() => {
+    if (!width || !items.length) return []
+    const fit = (arr) => (width - gap * (arr.length - 1)) / arr.reduce((s, x) => s + x.a, 0)
+    const out = []
+    let row = [], sumA = 0
+    for (const it of items) {
+      const a = 1 / it.ar // 宽高比 w/h
+      row.push({ it, a })
+      sumA += a
+      if (sumA * targetHeight + gap * (row.length - 1) >= width) {
+        out.push({ items: row, h: fit(row) })
+        row = []; sumA = 0
+      }
+    }
+    if (row.length) {
+      // 末行只剩 1 张时，从上一行借一张，避免出现「缺一块」的孤图
+      if (row.length === 1 && out.length) {
+        const prev = out.pop()
+        row.unshift(prev.items.pop())
+        out.push({ items: prev.items, h: fit(prev.items) })
+      }
+      const full = fit(row)
+      out.push({ items: row, h: Math.min(full, targetHeight * 1.55) })
+    }
+    return out
+  }, [width, items, targetHeight, gap])
+
   return (
-    <div className={`flex gap-3 ${className}`}>
-      {columns.map((col, ci) => (
-        <div key={ci} className="flex flex-1 flex-col gap-3">
-          {col.items.map((it, k) => (
-            <div key={k} className="group overflow-hidden rounded-xl shadow-md">
+    <div ref={ref} className={className}>
+      {rows.map((r, ri) => (
+        <div key={ri} style={{ display: 'flex', gap, marginBottom: gap }}>
+          {r.items.map(({ it, a }, k) => (
+            <div
+              key={k}
+              className="group overflow-hidden rounded-xl shadow-md"
+              style={{ width: a * r.h, height: r.h, flexShrink: 0 }}
+            >
               <ImageFrame
                 src={it.src}
                 label=""
-                className="block w-full transition-transform duration-500 group-hover:scale-[1.03]"
-                imgClassName="block h-auto w-full"
-                placeholderClassName="aspect-[3/4]"
+                className="block h-full w-full"
+                imgClassName="block h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
           ))}
@@ -59,20 +88,20 @@ function Paragraphs({ paragraphs, className = '' }) {
   )
 }
 
-/* 布局 A —— 聚光灯：文字居中 + 下方平衡瀑布流画廊 */
+/* 布局 A —— 聚光灯：文字居中 + 下方图片墙 */
 function LayoutCentered({ story }) {
   return (
     <div className="mx-auto max-w-4xl">
       <Paragraphs paragraphs={story.paragraphs} className="mx-auto mb-10 max-w-2xl text-center" />
-      <Collage items={gallery(story)} cols={3} />
+      <JustifiedGallery items={gallery(story)} targetHeight={210} />
     </div>
   )
 }
 
-/* 布局 B/C —— 一侧文字，一侧平衡瀑布流照片墙 */
+/* 布局 B/C —— 一侧文字，一侧图片墙 */
 function LayoutSide({ story, imagesLeft = false }) {
   const text = <Paragraphs paragraphs={story.paragraphs} className="lg:pt-2" />
-  const wall = <Collage items={gallery(story)} cols={2} />
+  const wall = <JustifiedGallery items={gallery(story)} targetHeight={155} />
   return (
     <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
       {imagesLeft ? <>{wall}{text}</> : <>{text}{wall}</>}
@@ -80,15 +109,15 @@ function LayoutSide({ story, imagesLeft = false }) {
   )
 }
 
-/* 布局 D —— 职场练习生：上方照片墙 + 文字 + 下方照片墙 */
+/* 布局 D —— 职场练习生：上方图片墙 + 文字 + 下方图片墙 */
 function LayoutTopBottom({ story }) {
   const items = gallery(story)
   const h = Math.ceil(items.length / 2)
   return (
     <div className="mx-auto max-w-4xl">
-      <Collage items={items.slice(0, h)} cols={3} className="mb-10" />
+      <JustifiedGallery items={items.slice(0, h)} targetHeight={190} className="mb-10" />
       <Paragraphs paragraphs={story.paragraphs} className="mx-auto max-w-2xl" />
-      <Collage items={items.slice(h)} cols={3} className="mt-10" />
+      <JustifiedGallery items={items.slice(h)} targetHeight={190} className="mt-10" />
     </div>
   )
 }
