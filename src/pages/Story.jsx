@@ -10,24 +10,38 @@ const bubbleGradients = {
   intern: ['#a24dff', '#e15bff'],
 }
 
-// 散落图片：外层漂浮（translateY），内层旋转，互不冲突
-function StoryImg({ src, label, rotate = 0, dur = 6, className = '', aspect = 'aspect-[4/5]' }) {
+const rotSeq = [-5, 4, -3, 5, -4, 3, -6, 4, -4]
+
+// 取第 i 张配图（没有则占位）
+const img = (story, i) => (story.gallery && story.gallery[i]) || null
+
+// 小图：外层漂浮（translateY），内层轻微旋转，互不冲突
+function Thumb({ src, i = 0, aspect = 'aspect-square' }) {
   return (
-    <div className="floaty inline-block w-full" style={{ animationDuration: `${dur}s` }}>
-      <div style={{ transform: `rotate(${rotate}deg)` }}>
+    <div className="floaty inline-block w-full" style={{ animationDuration: `${5.4 + (i % 4) * 0.5}s`, animationDelay: `${(i % 3) * 0.3}s` }}>
+      <div style={{ transform: `rotate(${rotSeq[i % rotSeq.length]}deg)` }}>
         <ImageFrame
           src={src}
-          label={label}
-          className={`w-full overflow-hidden rounded-2xl shadow-xl ${aspect} ${className}`}
-          imgClassName="h-full w-full rounded-2xl object-cover"
+          label=""
+          className={`${aspect} w-full overflow-hidden rounded-xl shadow-lg`}
+          imgClassName="h-full w-full rounded-xl object-cover"
         />
       </div>
     </div>
   )
 }
 
-// 取第 i 张配图（没有则占位）
-const img = (story, i) => (story.gallery && story.gallery[i]) || null
+// 小图网格（默认渲染至少 6 张，gallery 更多则全展示）
+function PhotoGrid({ story, cols = 'grid-cols-2', min = 6, start = 0 }) {
+  const total = Math.max(min, (story.gallery?.length || 0) - start)
+  return (
+    <div className={`grid ${cols} gap-3`}>
+      {Array.from({ length: total }).map((_, k) => (
+        <Thumb key={k} src={img(story, start + k)} i={start + k} />
+      ))}
+    </div>
+  )
+}
 
 function Paragraphs({ paragraphs, className = '' }) {
   return (
@@ -39,61 +53,48 @@ function Paragraphs({ paragraphs, className = '' }) {
   )
 }
 
-/* ---------- 布局 A：文章居中，图片四周散落 ---------- */
+/* 布局 A —— 聚光灯：文字居中，两侧各 3 张小图 */
 function LayoutCentered({ story }) {
-  const L = story.title
   return (
     <>
-      <div className="grid gap-8 lg:grid-cols-[0.85fr_1.7fr_0.85fr] lg:items-center">
-        <div className="hidden flex-col gap-10 lg:flex">
-          <StoryImg src={img(story, 0)} label={L} rotate={-6} dur={6.4} />
-          <StoryImg src={img(story, 1)} label={L} rotate={5} dur={7.1} aspect="aspect-square" />
+      <div className="grid gap-8 lg:grid-cols-[0.72fr_1.7fr_0.72fr] lg:items-center">
+        <div className="hidden flex-col gap-4 lg:flex">
+          {[0, 1, 2].map((i) => <Thumb key={i} src={img(story, i)} i={i} />)}
         </div>
         <Paragraphs paragraphs={story.paragraphs} className="mx-auto max-w-xl" />
-        <div className="hidden flex-col gap-10 lg:flex">
-          <StoryImg src={img(story, 2)} label={L} rotate={6} dur={6.8} aspect="aspect-square" />
-          <StoryImg src={img(story, 3)} label={L} rotate={-5} dur={5.9} />
+        <div className="hidden flex-col gap-4 lg:flex">
+          {[3, 4, 5].map((i) => <Thumb key={i} src={img(story, i)} i={i} />)}
         </div>
       </div>
-      <div className="mt-8 grid grid-cols-2 gap-4 lg:hidden">
-        {[0, 1, 2, 3].map((i) => <StoryImg key={i} src={img(story, i)} label={L} aspect="aspect-square" />)}
+      <div className="mt-8 grid grid-cols-3 gap-3 lg:hidden">
+        {[0, 1, 2, 3, 4, 5].map((i) => <Thumb key={i} src={img(story, i)} i={i} />)}
       </div>
     </>
   )
 }
 
-/* ---------- 布局 B / C：一侧文字，一侧散落图片 ---------- */
+/* 布局 B/C —— 一侧整块文字，一侧 6+ 张小图网格 */
 function LayoutSide({ story, imagesLeft = false }) {
-  const L = story.title
-  const cluster = (
-    <div className="flex flex-col gap-8">
-      <div className="w-[78%]" style={{ transform: 'translateX(4%)' }}><StoryImg src={img(story, 0)} label={L} rotate={-5} dur={6.5} /></div>
-      <div className="w-[70%] self-end" style={{ transform: 'translateX(-6%)' }}><StoryImg src={img(story, 1)} label={L} rotate={6} dur={7.2} aspect="aspect-square" /></div>
-      <div className="w-[64%]" style={{ transform: 'translateX(18%)' }}><StoryImg src={img(story, 2)} label={L} rotate={-4} dur={6.0} aspect="aspect-[5/4]" /></div>
-    </div>
-  )
   const text = <Paragraphs paragraphs={story.paragraphs} />
+  const grid = <PhotoGrid story={story} cols="grid-cols-3" min={6} />
   return (
-    <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-      {imagesLeft ? <>{cluster}{text}</> : <>{text}{cluster}</>}
+    <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+      {imagesLeft ? <>{grid}{text}</> : <>{text}{grid}</>}
     </div>
   )
 }
 
-/* ---------- 布局 D：图文交替 zigzag ---------- */
-function LayoutZigzag({ story }) {
-  const L = story.title
+/* 布局 D —— 职场练习生：文字整块居中，图片在上、下方 */
+function LayoutTopBottom({ story }) {
   return (
-    <div className="flex flex-col gap-14">
-      {story.paragraphs.map((p, i) => {
-        const image = <div className="w-full lg:w-[46%]"><StoryImg src={img(story, i)} label={L} rotate={i % 2 ? 4 : -4} dur={6 + i * 0.4} aspect="aspect-[5/4]" /></div>
-        const text = <p className="text-[1.02rem] leading-loose text-soft lg:w-[54%]">{p}</p>
-        return (
-          <div key={i} className="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
-            {i % 2 === 0 ? <>{text}{image}</> : <>{image}{text}</>}
-          </div>
-        )
-      })}
+    <div className="mx-auto max-w-3xl">
+      <div className="mx-auto mb-8 grid max-w-xl grid-cols-3 gap-3">
+        {[0, 1, 2].map((i) => <Thumb key={i} src={img(story, i)} i={i} aspect="aspect-[4/3]" />)}
+      </div>
+      <Paragraphs paragraphs={story.paragraphs} className="mx-auto max-w-2xl" />
+      <div className="mx-auto mt-8 grid max-w-xl grid-cols-3 gap-3">
+        {[3, 4, 5].map((i) => <Thumb key={i} src={img(story, i)} i={i} aspect="aspect-[4/3]" />)}
+      </div>
     </div>
   )
 }
@@ -103,7 +104,7 @@ function StoryBody({ story }) {
     case 'spotlight': return <LayoutCentered story={story} />
     case 'partner': return <LayoutSide story={story} imagesLeft={false} />
     case 'flavor-lab': return <LayoutSide story={story} imagesLeft={true} />
-    case 'intern': return <LayoutZigzag story={story} />
+    case 'intern': return <LayoutTopBottom story={story} />
     default: return <Paragraphs paragraphs={story.paragraphs} className="mx-auto max-w-2xl" />
   }
 }
@@ -130,7 +131,7 @@ export default function Story() {
     <div className="relative overflow-hidden">
       {/* 顶部渐变横幅 */}
       <div className="relative" style={{ background: `linear-gradient(135deg, ${c1}, ${c2})` }}>
-        <div className="mx-auto max-w-4xl px-4 py-14 text-center text-white sm:py-20">
+        <div className="mx-auto max-w-4xl px-4 py-12 text-center text-white sm:py-16">
           <Link to="/" className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-sm font-medium backdrop-blur-sm transition-colors hover:bg-white/30">
             <ArrowLeft size={15} /> 返回首页
           </Link>
@@ -140,9 +141,9 @@ export default function Story() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 py-14">
+      <div className="mx-auto max-w-5xl px-4 py-12">
         {/* 关键词 */}
-        <div className="mb-12 flex flex-wrap justify-center gap-2.5">
+        <div className="mb-10 flex flex-wrap justify-center gap-2.5">
           {story.keywords.map((k) => (
             <span key={k} className="rounded-full px-3.5 py-1.5 text-sm font-semibold" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>{k}</span>
           ))}
