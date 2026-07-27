@@ -1,6 +1,5 @@
 import { NavLink, Link } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
-import config from '../config'
 
 const navLinks = [
   { to: '/', label: 'HOME', end: true },
