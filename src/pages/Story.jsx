@@ -101,9 +101,10 @@ function LayoutCentered({ story }) {
 /* 布局 B/C —— 一侧文字，一侧图片墙 */
 function LayoutSide({ story, imagesLeft = false }) {
   const text = <Paragraphs paragraphs={story.paragraphs} className="lg:pt-2" />
-  const wall = <JustifiedGallery items={gallery(story)} targetHeight={155} />
+  // 行高调小 → 每行更多张 → 照片墙更矮，贴近文字高度
+  const wall = <JustifiedGallery items={gallery(story)} targetHeight={118} />
   return (
-    <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
+    <div className="grid items-start gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12">
       {imagesLeft ? <>{wall}{text}</> : <>{text}{wall}</>}
     </div>
   )
