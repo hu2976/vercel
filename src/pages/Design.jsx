@@ -15,32 +15,30 @@ export default function Design() {
         <p className="text-soft">海报、视觉、美工设计的一些小尝试</p>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* 瀑布流：海报按原始比例完整展示 */}
+      <div className="columns-1 sm:columns-2 lg:columns-3" style={{ columnGap: '1.25rem' }}>
         {designs.map((d, i) => (
-          <div key={i} className="card card-hover overflow-hidden">
-            <ImageFrame
-              src={d.image}
-              alt={d.title}
-              label="设计作品待补充"
-              className="aspect-[4/3] w-full"
-              imgClassName="h-full w-full object-cover"
-            />
-            <div className="px-5 py-4">
-              <h3 className="font-bold text-body">{d.title}</h3>
-              {d.description && <p className="mt-1 text-sm text-soft">{d.description}</p>}
-              {d.tags?.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {d.tags.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-md px-2 py-0.5 text-xs font-medium"
-                      style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              )}
+          <div key={i} className="mb-5 break-inside-avoid">
+            <div className="card card-hover group overflow-hidden">
+              <ImageFrame
+                src={d.image}
+                alt={d.title}
+                label="设计作品待补充"
+                className="block w-full overflow-hidden transition-transform duration-500 group-hover:scale-[1.03]"
+                imgClassName="block h-auto w-full"
+                placeholderClassName="aspect-[3/4]"
+              />
+              <div className="px-5 py-4">
+                <h3 className="font-bold text-body">{d.title}</h3>
+                {d.description && <p className="mt-1 text-sm text-soft">{d.description}</p>}
+                {d.tags?.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {d.tags.map((t) => (
+                      <span key={t} className="rounded-md px-2 py-0.5 text-xs font-medium" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>{t}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         ))}

@@ -16,7 +16,7 @@ const config = {
   },
 
   // 首页右侧个人照片（放到 public/images/ 后填路径，如 "/images/portrait.jpg"）
-  photo: null,
+  photo: "/images/portrait.jpg",
 
   // 个人简介：英文默认展示，鼠标悬停浮现中文
   bio: `Hi, I'm Hu Jinghan — a devoted fan of iced Americano, and you're warmly welcome to my little world.
@@ -97,7 +97,17 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
       emoji: "🎤",
       tagline: "从 TEDx 红毯到晚会舞台，用声音去影响人",
       cover: null, // "/images/story-spotlight.jpg"
-      gallery: [], // ["/images/spotlight-1.jpg", ...]
+      gallery: [
+        "/images/spotlight-1.jpg",
+        "/images/spotlight-2.jpg",
+        "/images/spotlight-3.jpg",
+        "/images/spotlight-4.jpg",
+        "/images/spotlight-5.jpg",
+        "/images/spotlight-6.jpg",
+        "/images/spotlight-7.jpg",
+        "/images/spotlight-8.jpg",
+        "/images/spotlight-9.jpg",
+      ],
       paragraphs: [
         "站在 TEDx 那个标志性的红圆毯上，灯光打下来，台下是几百双期待的眼睛。那一刻，我讲的不是专业术语，而是「拒绝被定义，挣脱完美身材的枷锁」。是的，我是那个站上世界级思想分享舞台的演讲者，也是拿下两项市级演讲比赛银奖的分享者。",
         "聚光灯下的我，有多种多样的身份。我是房山区公安反诈短剧里的新手骗子，是学校话剧《龙须沟畔的读书声》里的女主角大妞子，是学校所有晚会那个永远不会消失的主持人，周末还会跑去相声园子串场主持。",
@@ -111,7 +121,15 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
       emoji: "🚀",
       tagline: "从校园媒体到乡村振兴，敢想敢干的「爱折腾」合伙人",
       cover: null,
-      gallery: [],
+      gallery: [
+        "/images/partner-1.jpg",
+        "/images/partner-2.jpg",
+        "/images/partner-3.jpg",
+        "/images/partner-4.jpg",
+        "/images/partner-5.jpg",
+        "/images/partner-6.jpg",
+        "/images/partner-7.jpg",
+      ],
       paragraphs: [
         "如果说校园是一个微缩的社会，那我大概是那个最「爱折腾」的合伙人。我的「商业版图」从校园媒体延伸到科研一线：作为学通社副社长和广播台录播部部长，我用声音和文字串联起校园的每个角落；作为食品科研社的副社长，我带着 200 多名社员去北京中医药大学跨校交流，在感官评价里寻找科学的乐趣。",
         "我从不满足于纸上谈兵——大二暑假，我作为「金穗银康」实践团的本科生团长，带着 15 名队员一头扎进平谷和大兴的村子里，待了整整两个月，给洪水受灾群众做营养支持，写出的调研报告不仅被《前线》杂志报道，还让村委会采纳了我们的建议。",
@@ -125,7 +143,15 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
       emoji: "🔬",
       tagline: "试管、天平与舌尖上的万般风味，「没有坏食物，只有坏认知」",
       cover: null,
-      gallery: [],
+      gallery: [
+        "/images/flavor-lab-1.jpg",
+        "/images/flavor-lab-2.jpg",
+        "/images/flavor-lab-3.jpg",
+        "/images/flavor-lab-4.jpg",
+        "/images/flavor-lab-5.jpg",
+        "/images/flavor-lab-6.jpg",
+        "/images/flavor-lab-7.jpg",
+      ],
       paragraphs: [
         "我的实验室里，不只有试管和天平，还有舌尖上的万般风味。作为北京市营养师技能大赛学生组的第一名，我信仰一句话：「没有坏食物，只有坏认知。」我把这个信念揉进了我的竞赛项目里——作为负责人拿下「挑战杯」揭榜挂帅国赛一等奖的《粮芯稻》，我们用多模态 AI 给大米的风味做基因级别的质控；作为答辩人拿下主赛道国赛二等奖的《新膳》，我们解锁如何用重组蛋白为糖尿病患者点亮控糖的新可能。",
         "我的毕设方向是咖啡，在中粮营养健康研究院的感官实验室里，我每天泡在咖啡杯测桌上，设计水质对照实验，用 QDA（定量描述分析）去拆解一杯咖啡风味的成因。除此之外，我还在「中国好原料」「口服美容」「Proveg」等食品创新大赛里拿奖拿到手软，从酵母蛋白到富色食品，从质构改良到新蛋白应用，几乎把食品创新的各个赛道都跑了一遍。风味实验室，就是我的游乐场。",
@@ -138,7 +164,16 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
       emoji: "💼",
       tagline: "从实验室到互联网大厂，每一段实习都是不同颜色的拼图",
       cover: null,
-      gallery: [],
+      gallery: [
+        "/images/intern-1.jpg",
+        "/images/intern-2.jpg",
+        "/images/intern-3.jpg",
+        "/images/intern-4.jpg",
+        "/images/intern-5.jpg",
+        "/images/intern-6.jpg",
+        "/images/intern-7.jpg",
+        "/images/intern-8.jpg",
+      ],
       paragraphs: [
         "走出校园，步入实习，每一段都是不同颜色的拼图。食品研发员的身份让我接触产业视角；感官评测员的身份让我解锁风味轮盘；随后在东方甄选，我变身稽查员，每天和海量资质文件、市场监管条例打交道，利用 AI 工具批量筛查风险，建立了对食品行业规则的敬畏。",
         "但真正让我爆发式成长的，是在 Keep（AI 平台事业部）的运营实习。当我发现 Keep 的食物库里中餐几乎一片空白时，我决定从 0 到 1 自己干。我搭建了覆盖煎炒炸的中餐食物库框架，设计了「生食材 × 烹调系数」的自动化营养计算模型，甚至还用 Claude Code 写了批量处理脚本。最终，12 万条数据被成功审核上线，处理效率提升了 60%。",
@@ -150,9 +185,15 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
 
   // Design 设计作品（等作品文件夹到位后补充，图片放 public/images/ 下）
   designs: [
-    { title: "作品即将上线", description: "设计作品整理中，敬请期待", image: null, tags: ["Design"] },
-    { title: "作品即将上线", description: "设计作品整理中，敬请期待", image: null, tags: ["Design"] },
-    { title: "作品即将上线", description: "设计作品整理中，敬请期待", image: null, tags: ["Design"] },
+    { title: "视觉设计 ①", image: "/images/design-1.jpg", tags: ["平面设计"] },
+    { title: "视觉设计 ②", image: "/images/design-2.jpg", tags: ["平面设计"] },
+    { title: "新质蛋白肉", image: "/images/design-3.jpg", tags: ["海报设计"] },
+    { title: "植得吃", image: "/images/design-4.jpg", tags: ["海报设计"] },
+    { title: "粮芯稻", image: "/images/design-5.jpg", tags: ["海报设计"] },
+    { title: "新膳", image: "/images/design-6.jpg", tags: ["海报设计"] },
+    { title: "红壶相声社", image: "/images/design-7.jpg", tags: ["视觉设计"] },
+    { title: "咖佤艺", image: "/images/design-8.jpg", tags: ["视觉设计"] },
+    { title: "黔品", image: "/images/design-9.jpg", tags: ["视觉设计"] },
   ],
 
   // Vibecoding 作品集（原 Works）。file 指向 public/works 下的静态页面，在 /vibecoding/:slug 内嵌展示
