@@ -98,14 +98,15 @@ function LayoutCentered({ story }) {
   )
 }
 
-/* 布局 B/C —— 一侧文字，一侧图片墙 */
-function LayoutSide({ story, imagesLeft = false }) {
-  const text = <Paragraphs paragraphs={story.paragraphs} className="lg:pt-2" />
-  // 行高调小 → 每行更多张 → 照片墙更矮，贴近文字高度
-  const wall = <JustifiedGallery items={gallery(story)} targetHeight={118} />
+/* 布局 B/C —— 文字（左/右对齐）在上，整片照片墙在下：宽度撑满，图文永远协调 */
+function LayoutStacked({ story, align = 'left' }) {
   return (
-    <div className="grid items-start gap-8 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12">
-      {imagesLeft ? <>{wall}{text}</> : <>{text}{wall}</>}
+    <div className="mx-auto max-w-4xl">
+      <Paragraphs
+        paragraphs={story.paragraphs}
+        className={`mb-10 max-w-2xl ${align === 'right' ? 'ml-auto text-right' : ''}`}
+      />
+      <JustifiedGallery items={gallery(story)} targetHeight={200} />
     </div>
   )
 }
@@ -126,8 +127,8 @@ function LayoutTopBottom({ story }) {
 function StoryBody({ story }) {
   switch (story.slug) {
     case 'spotlight': return <LayoutCentered story={story} />
-    case 'partner': return <LayoutSide story={story} imagesLeft={false} />
-    case 'flavor-lab': return <LayoutSide story={story} imagesLeft={true} />
+    case 'partner': return <LayoutStacked story={story} align="left" />
+    case 'flavor-lab': return <LayoutStacked story={story} align="right" />
     case 'intern': return <LayoutTopBottom story={story} />
     default: return <Paragraphs paragraphs={story.paragraphs} className="mx-auto max-w-2xl" />
   }
