@@ -98,20 +98,43 @@ function LayoutCentered({ story }) {
   )
 }
 
-/* 布局 B/C —— 半包围：图片包在文字的「上方 + 一侧」，把文字裹在角落 */
-function LayoutWrap({ story, side = 'right' }) {
+// 竖排图片列：一列往下堆，图片按原始比例完整显示
+function VerticalStrip({ items }) {
+  return (
+    <div className="flex flex-col gap-3">
+      {items.map((it, k) => (
+        <div key={k} className="group overflow-hidden rounded-xl shadow-md">
+          <ImageFrame
+            src={it.src}
+            label=""
+            className="block w-full transition-transform duration-500 group-hover:scale-[1.03]"
+            imgClassName="block h-auto w-full"
+            placeholderClassName="aspect-[4/3]"
+          />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* 布局 B/C —— 半包围：图片包在文字的「上方 + 一侧」，把文字裹在角落
+   sideVertical: 侧翼用竖排（适合长文，填满侧边空白）；topN: 上方横幅张数 */
+function LayoutWrap({ story, side = 'right', topN, sideVertical = false }) {
   const items = gallery(story)
-  const topN = Math.ceil(items.length / 2)
-  const top = items.slice(0, topN)
-  const rest = items.slice(topN)
+  const tN = topN ?? Math.ceil(items.length / 2)
+  const top = items.slice(0, tN)
+  const rest = items.slice(tN)
   const text = <Paragraphs paragraphs={story.paragraphs} />
-  const sideWall = <JustifiedGallery items={rest} targetHeight={140} />
+  const sideWall = sideVertical ? <VerticalStrip items={rest} /> : <JustifiedGallery items={rest} targetHeight={140} />
+  const cols = sideVertical
+    ? (side === 'right' ? 'lg:grid-cols-[1.25fr_0.75fr]' : 'lg:grid-cols-[0.75fr_1.25fr]')
+    : 'lg:grid-cols-2'
   return (
     <div className="mx-auto max-w-4xl">
       {/* 上方横幅照片墙 */}
       <JustifiedGallery items={top} targetHeight={180} className="mb-4" />
       {/* 文字 + 一侧照片墙（半包围的“侧翼”） */}
-      <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-8">
+      <div className={`grid items-start gap-6 lg:gap-8 ${cols}`}>
         {side === 'right' ? <>{text}{sideWall}</> : <>{sideWall}{text}</>}
       </div>
     </div>
@@ -135,7 +158,7 @@ function StoryBody({ story }) {
   switch (story.slug) {
     case 'spotlight': return <LayoutCentered story={story} />
     case 'partner': return <LayoutWrap story={story} side="right" />
-    case 'flavor-lab': return <LayoutWrap story={story} side="left" />
+    case 'flavor-lab': return <LayoutWrap story={story} side="left" topN={2} sideVertical />
     case 'intern': return <LayoutTopBottom story={story} />
     default: return <Paragraphs paragraphs={story.paragraphs} className="mx-auto max-w-2xl" />
   }
