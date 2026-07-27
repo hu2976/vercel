@@ -98,6 +98,13 @@ h1, h2, h3, h4 {
   letter-spacing: 0.01em;
 }
 
+/* About 英文斜体衬线 */
+.bio-serif {
+  font-family: "Georgia", "Times New Roman", "Songti SC", "STSong", serif;
+  font-style: italic;
+  letter-spacing: 0.008em;
+}
+
 /* ============================================================
    语义色工具类（配合 CSS 变量，自动随日/夜切换）
    ============================================================ */
