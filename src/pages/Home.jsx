@@ -209,17 +209,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== 技能标签墙 ===== */}
-      <section className="mx-auto max-w-3xl px-5 py-16">
-        <h2 className="mb-10 text-center text-2xl font-bold text-body">我的技能</h2>
-        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:gap-x-4">
+      {/* ===== 技能标签墙（松散漂浮云） ===== */}
+      <section className="mx-auto max-w-4xl px-5 py-20">
+        <h2 className="mb-14 text-center text-2xl font-bold text-body">我的技能</h2>
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-9 sm:gap-x-12">
           {config.skills.map((skill, i) => {
             const st = skillStyle[i % skillStyle.length]
+            const jitter = [10, -18, 24, -8, 16, -22, 6, -14, 20, -6, 14, -20]
             return (
-              <span key={skill} className="skill-float" style={{ '--dur': `${st.dur}s`, animationDelay: `${(i % 5) * 0.4}s` }}>
+              <span
+                key={skill}
+                className="skill-float"
+                style={{ '--dur': `${st.dur}s`, animationDelay: `${(i % 5) * 0.4}s`, marginTop: `${jitter[i % jitter.length]}px` }}
+              >
                 <span
                   className={`skill-tag ${st.tone}`}
-                  style={{ fontSize: `${st.fs}rem`, padding: `${st.fs * 0.42}rem ${st.fs * 0.92}rem` }}
+                  style={{ fontSize: `${st.fs}rem`, padding: `${st.fs * 0.42}rem ${st.fs * 0.95}rem` }}
                 >
                   {skill}
                 </span>
@@ -231,19 +236,23 @@ export default function Home() {
 
       {/* ===== 荣誉奖项 ===== */}
       <section className="mx-auto max-w-2xl px-5 pb-16">
-        <h2 className="mb-10 text-center text-2xl font-bold text-body">我的奖项</h2>
-        <div className="flex flex-col gap-3.5">
+        <h2 className="mb-12 text-center text-2xl font-bold text-body">我的奖项</h2>
+        <div className="flex flex-col">
           {config.awards.map((award, i) => {
             const Icon = awardIcons[i % awardIcons.length]
             const featured = i === 0
             return (
-              <div key={award} className={`award-card ${featured ? 'featured' : ''}`}>
+              <div
+                key={award}
+                className={`flex items-center gap-4 ${featured ? 'pb-6' : 'py-4'} ${i > 0 ? 'border-t' : ''}`}
+                style={i > 0 ? { borderColor: 'var(--border)' } : undefined}
+              >
                 <span className="award-badge" style={featured ? { width: '3.5rem', height: '3.5rem', borderRadius: '1.1rem' } : undefined}>
                   <Icon size={featured ? 28 : 20} />
                 </span>
                 <div className="min-w-0">
-                  {featured && <span className="mb-1 block text-xs font-semibold text-accent">代表性荣誉</span>}
-                  <span className={`leading-relaxed text-body ${featured ? 'text-lg font-extrabold' : 'font-medium'}`}>{award}</span>
+                  {featured && <span className="mb-0.5 block text-xs font-semibold text-accent">代表性荣誉</span>}
+                  <span className={`leading-relaxed text-body ${featured ? 'text-xl font-extrabold' : 'font-medium'}`}>{award}</span>
                 </div>
               </div>
             )
