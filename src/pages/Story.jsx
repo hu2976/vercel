@@ -82,7 +82,7 @@ function Paragraphs({ paragraphs, className = '' }) {
   return (
     <div className={className}>
       {paragraphs.map((p, i) => (
-        <p key={i} className="mb-5 text-[1.02rem] leading-loose text-soft last:mb-0">{p}</p>
+        <p key={i} className="mb-5 text-justify text-[1.02rem] leading-loose text-soft last:mb-0">{p}</p>
       ))}
     </div>
   )
@@ -92,21 +92,28 @@ function Paragraphs({ paragraphs, className = '' }) {
 function LayoutCentered({ story }) {
   return (
     <div className="mx-auto max-w-4xl">
-      <Paragraphs paragraphs={story.paragraphs} className="mx-auto mb-10 max-w-2xl text-center" />
+      <Paragraphs paragraphs={story.paragraphs} className="mx-auto mb-10 max-w-2xl" />
       <JustifiedGallery items={gallery(story)} targetHeight={210} />
     </div>
   )
 }
 
-/* 布局 B/C —— 文字（左/右对齐）在上，整片照片墙在下：宽度撑满，图文永远协调 */
-function LayoutStacked({ story, align = 'left' }) {
+/* 布局 B/C —— 半包围：图片包在文字的「上方 + 一侧」，把文字裹在角落 */
+function LayoutWrap({ story, side = 'right' }) {
+  const items = gallery(story)
+  const topN = Math.ceil(items.length / 2)
+  const top = items.slice(0, topN)
+  const rest = items.slice(topN)
+  const text = <Paragraphs paragraphs={story.paragraphs} />
+  const sideWall = <JustifiedGallery items={rest} targetHeight={140} />
   return (
     <div className="mx-auto max-w-4xl">
-      <Paragraphs
-        paragraphs={story.paragraphs}
-        className={`mb-10 max-w-2xl ${align === 'right' ? 'ml-auto text-right' : ''}`}
-      />
-      <JustifiedGallery items={gallery(story)} targetHeight={200} />
+      {/* 上方横幅照片墙 */}
+      <JustifiedGallery items={top} targetHeight={180} className="mb-4" />
+      {/* 文字 + 一侧照片墙（半包围的“侧翼”） */}
+      <div className="grid items-center gap-6 lg:grid-cols-2 lg:gap-8">
+        {side === 'right' ? <>{text}{sideWall}</> : <>{sideWall}{text}</>}
+      </div>
     </div>
   )
 }
@@ -127,8 +134,8 @@ function LayoutTopBottom({ story }) {
 function StoryBody({ story }) {
   switch (story.slug) {
     case 'spotlight': return <LayoutCentered story={story} />
-    case 'partner': return <LayoutStacked story={story} align="left" />
-    case 'flavor-lab': return <LayoutStacked story={story} align="right" />
+    case 'partner': return <LayoutWrap story={story} side="right" />
+    case 'flavor-lab': return <LayoutWrap story={story} side="left" />
     case 'intern': return <LayoutTopBottom story={story} />
     default: return <Paragraphs paragraphs={story.paragraphs} className="mx-auto max-w-2xl" />
   }

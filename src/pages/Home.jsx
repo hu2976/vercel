@@ -94,7 +94,7 @@ export default function Home() {
               {bioText.map((p, i) => (
                 <p
                   key={i}
-                  className={`mb-2.5 text-[0.95rem] leading-relaxed text-soft last:mb-0 ${bioHover ? '' : 'bio-serif'}`}
+                  className={`mb-2.5 text-justify text-[0.95rem] leading-relaxed text-soft last:mb-0 ${bioHover ? '' : 'bio-serif'}`}
                 >
                   {p}
                 </p>
