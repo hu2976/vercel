@@ -109,16 +109,16 @@ export default function Home() {
           </div>
 
           {/* 右：抠图人像（无框，悬浮在光斑上） */}
-          <div className="portrait-stage mx-auto w-full max-w-[330px]">
+          <div className="portrait-stage mx-auto w-full max-w-[340px]">
             <div className="portrait-blob" />
-            {/* 按原图比例完整显示，不裁切 */}
+            {/* 抠图人物：悬浮在光晕上，无边框 */}
             <ImageFrame
               src={config.photo}
               alt={config.nameZh}
               label="个人照片待补充"
-              className="relative z-10 w-full overflow-hidden rounded-[2rem] shadow-2xl"
-              imgClassName="block h-auto w-full rounded-[2rem]"
-              placeholderClassName="aspect-[4/5]"
+              className="relative z-10 w-full"
+              imgClassName="block h-auto w-full [filter:drop-shadow(0_16px_26px_rgba(0,0,0,0.28))]"
+              placeholderClassName="aspect-[4/5] overflow-hidden rounded-[2rem]"
             />
           </div>
         </div>

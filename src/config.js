@@ -16,7 +16,7 @@ const config = {
   },
 
   // 首页右侧个人照片（放到 public/images/ 后填路径，如 "/images/portrait.jpg"）
-  photo: "/images/portrait.jpg",
+  photo: "/images/portrait-cut.png",
 
   // 个人简介：英文默认展示，鼠标悬停浮现中文
   bio: `Hi, I'm Hu Jinghan — a devoted fan of iced Americano, and you're warmly welcome to my little world.
