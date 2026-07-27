@@ -241,15 +241,18 @@ h1, h2, h3, h4 {
   place-items: center;
   overflow: hidden;
   isolation: isolate;
+  /* 透明玻璃泡泡：让背景透出来 */
   background:
-    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 42%),
-    radial-gradient(circle at 74% 80%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%),
-    linear-gradient(140deg, var(--b1, #5b8cff), var(--b2, #7b5bff));
-  border: 1px solid rgba(255, 255, 255, 0.55);
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 40%),
+    radial-gradient(circle at 72% 78%, color-mix(in srgb, var(--b2, #7b5bff) 60%, transparent), transparent 62%),
+    linear-gradient(140deg, color-mix(in srgb, var(--b1, #5b8cff) 52%, transparent), color-mix(in srgb, var(--b2, #7b5bff) 40%, transparent));
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   box-shadow:
-    inset 0 2px 14px rgba(255, 255, 255, 0.65),
-    inset 5px -10px 26px rgba(0, 0, 0, 0.14),
-    0 18px 42px -14px var(--b1, #5b8cff);
+    inset 0 2px 16px rgba(255, 255, 255, 0.6),
+    inset 6px -12px 28px color-mix(in srgb, var(--b1, #5b8cff) 30%, transparent),
+    0 18px 42px -16px var(--b1, #5b8cff);
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.4s ease;
 }
 /* 镜面高光 */
@@ -292,6 +295,18 @@ h1, h2, h3, h4 {
 /* ============================================================
    技能标签墙 —— 大小错落，悬停放大
    ============================================================ */
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+.skill-float {
+  display: inline-block;
+  animation: bob var(--dur, 5s) ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skill-float { animation: none; }
+}
+
 .skill-tag {
   display: inline-flex;
   align-items: center;
@@ -305,13 +320,31 @@ h1, h2, h3, h4 {
   transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1),
     color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
+/* 深浅不一的色调 */
+.skill-tag.t2 {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  border-color: transparent;
+}
+.skill-tag.t3 {
+  background-color: color-mix(in srgb, var(--accent-2) 16%, var(--surface));
+  color: var(--accent-2);
+  border-color: transparent;
+}
+.skill-tag.t4 {
+  background-image: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 22px -10px var(--accent);
+}
 .skill-tag:hover {
-  transform: scale(1.18) rotate(-1deg);
+  transform: scale(1.16) rotate(-1.5deg);
   color: var(--accent);
   border-color: var(--accent);
   box-shadow: var(--glow), 0 8px 26px -12px var(--accent);
   z-index: 2;
 }
+.skill-tag.t4:hover { color: #fff; }
 
 /* ============================================================
    奖项卡 —— 渐变奖章徽标 + 左侧高光条
@@ -355,9 +388,12 @@ h1, h2, h3, h4 {
   box-shadow: 0 8px 20px -8px var(--accent);
 }
 .award-card.featured {
-  grid-column: 1 / -1;
-  background-image: linear-gradient(120deg, var(--accent-soft), transparent 70%);
+  padding: 1.5rem 1.5rem;
+  background-image: linear-gradient(120deg, var(--accent-soft), transparent 72%);
+  border-color: var(--accent);
+  box-shadow: var(--glow);
 }
+.award-card.featured::before { width: 6px; }
 
 /* ============================================================
    人像舞台 —— 抠图照片悬浮在柔和光斑上

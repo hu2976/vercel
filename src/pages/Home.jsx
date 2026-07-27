@@ -14,13 +14,22 @@ const XhsIcon = ({ size = 15 }) => (
   </svg>
 )
 
+// 四维气泡：颜色更区分（暖粉 / 蓝 / 绿 / 紫）、尺寸错落、漂浮时长各异
 const bubbleStyles = {
-  spotlight:   { c1: '#ff7eb3', c2: '#ff9d5c', size: 176, offset: 0 },
-  partner:     { c1: '#6aa0ff', c2: '#8b6bff', size: 132, offset: 58 },
-  'flavor-lab':{ c1: '#3ad6a8', c2: '#4ad6ff', size: 160, offset: 20 },
-  intern:      { c1: '#b17bff', c2: '#ff6bd0', size: 122, offset: 72 },
+  spotlight:   { c1: '#ff5f9e', c2: '#ff9d5c', size: 178, offset: 0,  dur: 6.5 },
+  partner:     { c1: '#4d8bff', c2: '#5566ff', size: 130, offset: 60, dur: 5.2 },
+  'flavor-lab':{ c1: '#25d07f', c2: '#12c2c2', size: 158, offset: 18, dur: 7.2 },
+  intern:      { c1: '#a24dff', c2: '#e15bff', size: 120, offset: 74, dur: 5.8 },
 }
-const skillSizes = [1.15, 0.9, 1.35, 0.95, 1.1, 0.85, 1.25, 1.0, 1.4, 0.9, 1.05, 1.2]
+// 技能：字号错落 + 色调深浅（t1 淡 / t2 蓝 / t3 绿 / t4 实心渐变）+ 漂浮时长
+const skillStyle = [
+  { fs: 1.15, tone: 't2', dur: 5.4 }, { fs: 0.9,  tone: 't1', dur: 6.6 },
+  { fs: 1.4,  tone: 't4', dur: 4.8 }, { fs: 0.95, tone: 't1', dur: 7.0 },
+  { fs: 1.1,  tone: 't3', dur: 5.9 }, { fs: 0.85, tone: 't1', dur: 6.2 },
+  { fs: 1.28, tone: 't2', dur: 5.1 }, { fs: 1.0,  tone: 't3', dur: 6.9 },
+  { fs: 1.45, tone: 't4', dur: 4.6 }, { fs: 0.9,  tone: 't1', dur: 6.4 },
+  { fs: 1.05, tone: 't3', dur: 5.6 }, { fs: 1.2,  tone: 't2', dur: 6.0 },
+]
 const awardIcons = [Crown, Award, Medal, Trophy, Star, Gem]
 
 // 联系方式小胶囊
@@ -134,8 +143,10 @@ export default function Home() {
                 className="bubble-wrap group flex w-36 flex-col items-center text-center sm:w-40"
                 style={{ marginTop: `${st.offset}px` }}
               >
-                <span className="floaty bubble" style={{ width: st.size, height: st.size, '--b1': st.c1, '--b2': st.c2 }}>
-                  <span className="bubble-emoji">{s.emoji}</span>
+                <span className="floaty inline-block" style={{ animationDuration: `${st.dur}s` }}>
+                  <span className="bubble" style={{ width: st.size, height: st.size, '--b1': st.c1, '--b2': st.c2 }}>
+                    <span className="bubble-emoji">{s.emoji}</span>
+                  </span>
                 </span>
                 <h3 className="mt-4 font-bold text-body transition-colors group-hover:text-accent">{s.title}</h3>
                 <p className="bubble-caption mt-1.5 px-1 text-xs leading-relaxed text-soft">{s.tagline}</p>
@@ -201,12 +212,17 @@ export default function Home() {
       {/* ===== 技能标签墙 ===== */}
       <section className="mx-auto max-w-3xl px-5 py-16">
         <h2 className="mb-10 text-center text-2xl font-bold text-body">我的技能</h2>
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 sm:gap-x-4">
           {config.skills.map((skill, i) => {
-            const fs = skillSizes[i % skillSizes.length]
+            const st = skillStyle[i % skillStyle.length]
             return (
-              <span key={skill} className="skill-tag" style={{ fontSize: `${fs}rem`, padding: `${fs * 0.42}rem ${fs * 0.9}rem` }}>
-                {skill}
+              <span key={skill} className="skill-float" style={{ '--dur': `${st.dur}s`, animationDelay: `${(i % 5) * 0.4}s` }}>
+                <span
+                  className={`skill-tag ${st.tone}`}
+                  style={{ fontSize: `${st.fs}rem`, padding: `${st.fs * 0.42}rem ${st.fs * 0.92}rem` }}
+                >
+                  {skill}
+                </span>
               </span>
             )
           })}
@@ -214,20 +230,20 @@ export default function Home() {
       </section>
 
       {/* ===== 荣誉奖项 ===== */}
-      <section className="mx-auto max-w-3xl px-5 pb-16">
+      <section className="mx-auto max-w-2xl px-5 pb-16">
         <h2 className="mb-10 text-center text-2xl font-bold text-body">我的奖项</h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-3.5">
           {config.awards.map((award, i) => {
             const Icon = awardIcons[i % awardIcons.length]
             const featured = i === 0
             return (
               <div key={award} className={`award-card ${featured ? 'featured' : ''}`}>
-                <span className="award-badge" style={featured ? { width: '3.25rem', height: '3.25rem' } : undefined}>
-                  <Icon size={featured ? 24 : 20} />
+                <span className="award-badge" style={featured ? { width: '3.5rem', height: '3.5rem', borderRadius: '1.1rem' } : undefined}>
+                  <Icon size={featured ? 28 : 20} />
                 </span>
                 <div className="min-w-0">
-                  {featured && <span className="mb-0.5 block text-xs font-semibold text-accent">代表性荣誉</span>}
-                  <span className={`leading-relaxed text-body ${featured ? 'font-bold' : 'font-medium'}`}>{award}</span>
+                  {featured && <span className="mb-1 block text-xs font-semibold text-accent">代表性荣誉</span>}
+                  <span className={`leading-relaxed text-body ${featured ? 'text-lg font-extrabold' : 'font-medium'}`}>{award}</span>
                 </div>
               </div>
             )
