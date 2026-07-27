@@ -1,53 +1,57 @@
-import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { NavLink, Link } from 'react-router-dom'
 import { Sun, Moon } from 'lucide-react'
 import config from '../config'
 
 const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/works', label: 'Works' },
+  { to: '/', label: 'HOME', end: true },
+  { to: '/design', label: 'Design' },
+  { to: '/vibecoding', label: 'Vibecoding' },
 ];
 
 export default function Header({ dark, onToggleTheme }) {
-  const location = useLocation();
-  const [nameHover, setNameHover] = useState(false);
-
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200/60 bg-white/80 backdrop-blur-md dark:border-gray-800/60 dark:bg-gray-950/80">
-      <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-        <Link
-          to="/"
-          onMouseEnter={() => setNameHover(true)}
-          onMouseLeave={() => setNameHover(false)}
-          className="text-xl font-bold tracking-tight text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-        >
-          {nameHover ? config.nameZh : 'hujinghan'}
+    <header
+      className="sticky top-0 z-50 border-b backdrop-blur-md"
+      style={{ borderColor: 'var(--border)', backgroundColor: 'color-mix(in srgb, var(--bg) 82%, transparent)' }}
+    >
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5">
+        <Link to="/" className="font-script text-2xl leading-none text-body" style={{ letterSpacing: '0.02em' }}>
+          {config.nameZh}
         </Link>
 
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-1 sm:gap-2">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.to}
               to={link.to}
-              className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                location.pathname === link.to
-                  ? 'bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-400'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white'
-              }`}
+              end={link.end}
+              className={({ isActive }) =>
+                `rounded-full px-3 py-2 text-sm font-semibold tracking-wide transition-colors ${
+                  isActive ? 'nav-active' : 'nav-idle'
+                }`
+              }
             >
               {link.label}
-            </Link>
+            </NavLink>
           ))}
+
           <button
             onClick={onToggleTheme}
-            className="ml-2 rounded-lg p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
-            aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="ml-1 grid h-9 w-9 place-items-center rounded-full transition-colors"
+            style={{ border: '1px solid var(--border)', color: 'var(--accent)', boxShadow: 'var(--glow)' }}
+            aria-label={dark ? '切换到日间模式' : '切换到夜间模式'}
+            title={dark ? '切换到日间模式' : '切换到夜间模式'}
           >
             {dark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
         </nav>
       </div>
+
+      <style>{`
+        .nav-idle { color: var(--text-soft); }
+        .nav-idle:hover { color: var(--accent); }
+        .nav-active { color: var(--accent-contrast); background-image: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: var(--glow); }
+      `}</style>
     </header>
   );
 }

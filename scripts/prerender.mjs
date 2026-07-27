@@ -10,11 +10,14 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const dist = join(root, 'dist')
 const shell = readFileSync(join(dist, 'index.html'), 'utf8')
 
-const routes = new Set(['/blog', '/works'])
+const routes = new Set(['/design', '/vibecoding', '/blog'])
 
-// 作品路由：读取 src/config.js
+// 读取 src/config.js
 const cfg = (await import(pathToFileURL(join(root, 'src/config.js')).href)).default
-for (const w of cfg.works || []) if (w.slug) routes.add('/works/' + w.slug)
+// Vibecoding 作品路由
+for (const w of cfg.works || []) if (w.slug) routes.add('/vibecoding/' + w.slug)
+// 四维故事路由
+for (const s of cfg.stories || []) if (s.slug) routes.add('/story/' + s.slug)
 
 // 博客路由：读取 content/blog/*.md
 const blogDir = join(root, 'content/blog')
