@@ -201,6 +201,15 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
   // Vibecoding 作品集（原 Works）。file 指向 public/works 下的静态页面，在 /vibecoding/:slug 内嵌展示
   works: [
     {
+      slug: "ai-recipe-calorie-demand",
+      title: "AI 食谱 + 热量识别 · 需求数据分析与产品定位",
+      description:
+        "对 307 条实质相关的 B站评论做点赞加权重排、853 条小红书笔记与 200 篇公众号文章做跨平台共现分析，得出一个反直觉的结论：抱怨最多的痛点，恰恰是最不该做的。内容包括说的人多≠认同的人多的加权对比、共性与个性需求拆分、四类真实人群及其核心痛点、竞品四种活法（补贴换量／数据壁垒／体验取胜／技术叙事）、从数据到一句话的定位推导，以及功能清单与验收标准。纯前端单文件实现。",
+      tags: ["需求分析", "Data Viz", "产品定位"],
+      file: "/works/files/ai-recipe-calorie-demand.html",
+      date: "2026-08-10",
+    },
+    {
       slug: "nutrition-exam-practice",
       title: "2026 注册营养师 · 考点配套练习",
       description: "把「注册营养师考试宝典」全 159 个考点的配套习题整理成一套可交互刷题页：按 7 大板块（营养学基础、食物营养价值、特殊人群与环境营养、公共营养、临床营养、营养与慢性病、食品卫生）分类，共 730 道真题。默认只显示题干与选项，点「查看答案及解析」逐题展开答案与解析；选项可点选，展开后自动标注正误。纯前端单文件实现。",

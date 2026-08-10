@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 食谱 + 热量识别 · 需求数据分析与产品定位</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --surface-1:#fcfcfb; --plane:#f4f4f1; --card:#ffffff;
+  --ink-1:#0b0b0b; --ink-2:#52514e; --ink-3:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --hair:rgba(11,11,11,.10);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --crit:#d03b3b; --quote-bg:#f7f7f4; --hi:#fff8e6;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    --surface-1:#1a1a19; --plane:#0d0d0d; --card:#161615;
+    --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+    --grid:#2c2c2a; --axis:#383835; --hair:rgba(255,255,255,.10);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --quote-bg:#201f1e; --hi:#241f14;
+  }
+}
+:root[data-theme="dark"]{
+  --surface-1:#1a1a19; --plane:#0d0d0d; --card:#161615;
+  --ink-1:#ffffff; --ink-2:#c3c2b7; --ink-3:#898781;
+  --grid:#2c2c2a; --axis:#383835; --hair:rgba(255,255,255,.10);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --crit:#d03b3b; --quote-bg:#201f1e; --hi:#241f14;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink-1);
+  font:16px/1.75 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1020px;margin:0 auto;padding:0 20px 90px}
+header{padding:56px 0 34px;border-bottom:1px solid var(--hair)}
+.kicker{font-size:13px;letter-spacing:.18em;color:var(--s2);font-weight:700;margin-bottom:12px}
+h1{font-size:clamp(26px,4.4vw,38px);line-height:1.3;margin:0 0 14px;letter-spacing:-.02em}
+.sub{font-size:16.5px;color:var(--ink-2);max-width:770px;margin:0}
+.meta{margin-top:20px;font-size:13px;color:var(--ink-3)}
+h2{font-size:25px;margin:60px 0 8px;letter-spacing:-.01em;scroll-margin-top:16px}
+h2 .num{color:var(--s2);font-variant-numeric:tabular-nums;margin-right:10px}
+h3{font-size:18.5px;margin:34px 0 10px}
+p{margin:12px 0}
+.lead{color:var(--ink-2);font-size:15.5px;margin-bottom:20px}
+small{font-size:12.5px;color:var(--ink-3)}
+.card{background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:22px 24px;margin:18px 0}
+.figure{background:var(--surface-1);border:1px solid var(--hair);border-radius:12px;padding:22px 20px;margin:24px 0}
+.figure .ftitle{font-size:15.5px;font-weight:600;margin-bottom:2px}
+.figure .fsub{font-size:13px;color:var(--ink-3);margin-bottom:18px}
+.figure .cap{font-size:13px;color:var(--ink-3);margin-top:14px;padding-top:12px;border-top:1px solid var(--grid)}
+.svgwrap{overflow-x:auto} svg{display:block;max-width:100%;height:auto}
+.q{background:var(--quote-bg);border-left:3px solid var(--s1);border-radius:0 8px 8px 0;
+  padding:13px 15px;margin:9px 0;font-size:14.5px;line-height:1.7}
+.q.o{border-left-color:var(--s2)} .q.a{border-left-color:var(--s3)} .q.r{border-left-color:var(--crit)}
+.q .src{display:block;margin-top:7px;font-size:12px;color:var(--ink-3)}
+.q .src b{color:var(--ink-2);font-weight:600}
+.tw{overflow-x:auto;margin:20px 0;border:1px solid var(--hair);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;background:var(--card);min-width:600px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--grid);vertical-align:top}
+th{background:var(--surface-1);font-weight:600;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td.num,th.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+tr.hl td{background:var(--hi)}
+.tag{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:999px;
+  border:1px solid var(--hair);color:var(--ink-2);background:var(--surface-1);margin:1px 4px 1px 0}
+.tag.b{border-color:var(--s1);color:var(--s1)}
+.tag.o{border-color:var(--s2);color:var(--s2)}
+.tag.g{border-color:var(--s3);color:var(--s3)}
+.tag.r{border-color:var(--crit);color:var(--crit)}
+.finding{border:1px solid var(--hair);border-left:4px solid var(--s1);border-radius:0 10px 10px 0;
+  background:var(--card);padding:18px 20px;margin:20px 0}
+.finding.warn{border-left-color:var(--crit)}
+.finding.go{border-left-color:var(--s3)}
+.finding .t{font-weight:700;font-size:15.5px;margin-bottom:6px}
+.finding p{margin:6px 0;font-size:14.5px;color:var(--ink-2)}
+.finding b{color:var(--ink-1)}
+.step{display:grid;grid-template-columns:34px 1fr;gap:14px;margin:14px 0;align-items:start}
+.step .n{width:34px;height:34px;border-radius:50%;background:var(--s1);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.step .b{font-size:15px;color:var(--ink-2)}
+.step .b b{color:var(--ink-1)}
+.pos{background:var(--card);border:2px solid var(--s3);border-radius:14px;padding:26px 28px;margin:26px 0}
+.pos .lbl{font-size:12.5px;letter-spacing:.14em;color:var(--s3);font-weight:700;margin-bottom:10px}
+.pos .main{font-size:21px;line-height:1.55;font-weight:700;letter-spacing:-.01em}
+.pos .sub2{margin-top:14px;font-size:14.5px;color:var(--ink-2)}
+ul.clean{padding-left:20px} ul.clean li{margin:7px 0;font-size:15px}
+.toc{background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:16px 24px;margin:28px 0}
+.toc ol{margin:0;padding-left:22px;font-size:14.5px;line-height:1.95}
+.toc a{text-decoration:none} .toc a:hover{text-decoration:underline}
+hr{border:none;border-top:1px solid var(--hair);margin:48px 0}
+footer{font-size:13px;color:var(--ink-3);padding-top:22px;border-top:1px solid var(--hair);margin-top:52px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">数据分析 · 共性与个性 · 产品定位推导</div>
+  <h1>抱怨最多的痛点，恰恰是最不该做的<br>—— 一次赞数加权重排后的需求分析</h1>
+  <p class="sub">对 307 条实质相关的 B站评论做点赞加权、853 条小红书笔记与 200 篇公众号文章做跨平台共现分析后，
+  痛点排序被完全推翻。这份文档给出：共性与个性的量化拆分、四类真实人群、含蚂蚁阿福在内的竞品格局，以及一条能被数据支撑的定位。</p>
+  <div class="meta">2026-08-10 · 已剔除 Keep（运动赛道，非本品类竞争对手）· 已补入蚂蚁阿福</div>
+</header>
+
+<div class="toc">
+  <ol>
+    <li><a href="#a1">数据分析一：说的人多 ≠ 认同的人多</a></li>
+    <li><a href="#a2">数据分析二：共性与个性——三个平台没有共同的用户</a></li>
+    <li><a href="#a3">四类真实人群与各自的核心痛点</a></li>
+    <li><a href="#a4">竞品格局：阿福、薄荷、食卡卡、小卡的四种活法</a></li>
+    <li><a href="#a5">定位推导：从数据到一句话</a></li>
+    <li><a href="#a6">功能清单与验收标准</a></li>
+  </ol>
+</div>
+
+<!-- =============== 1 =============== -->
+<h2 id="a1"><span class="num">01</span>数据分析一：说的人多 ≠ 认同的人多</h2>
+<p class="lead">B站评论自带点赞数，这是一个天然的「共识度」信号。同一批语料，按<b>条数</b>排和按<b>获赞</b>排，结果几乎是反的。</p>
+
+<div class="figure">
+  <div class="ftitle">图 1 · 痛点的「提及率」与「共识度」错位</div>
+  <div class="fsub">语料：307 条与饮食管理实质相关的 B站评论（已去重、剔除玩梗与广告视频），累计获赞 59,433</div>
+  <div class="svgwrap">
+  <svg viewBox="0 0 900 430" role="img" aria-label="提及率与共识度对比">
+    <g font-family="system-ui,-apple-system,sans-serif" font-size="12.5">
+      <text x="300" y="14" fill="var(--s1)" font-weight="700" font-size="13">← 提及率（多少人在说）</text>
+      <text x="530" y="14" fill="var(--s2)" font-weight="700" font-size="13">共识度（多少人点了赞）→</text>
+      <line x1="450" y1="24" x2="450" y2="378" stroke="var(--axis)"/>
+
+      <!-- rows: label center, left bar = mention%, right bar = voice% ; scale 16px per % -->
+      <g>
+        <text x="455" y="46" fill="var(--ink-1)" font-size="13" font-weight="600">中餐/外卖/食堂/油 的场景断层</text>
+        <rect x="314" y="52" width="136" height="17" rx="4" fill="var(--s1)"/><text x="272" y="65" fill="var(--ink-2)" font-variant-numeric="tabular-nums">8.5%</text>
+        <rect x="450" y="52" width="202" height="17" rx="4" fill="var(--s2)"/><text x="660" y="65" fill="var(--ink-1)" font-weight="700" font-variant-numeric="tabular-nums">12.6%</text>
+        <text x="722" y="65" fill="var(--s3)" font-size="12" font-weight="700">共识放大 1.5×</text>
+      </g>
+      <g>
+        <text x="455" y="90" fill="var(--ink-1)" font-size="13" font-weight="600">记录太麻烦 / 难以坚持</text>
+        <rect x="351" y="96" width="99" height="17" rx="4" fill="var(--s1)"/><text x="309" y="109" fill="var(--ink-2)" font-variant-numeric="tabular-nums">6.2%</text>
+        <rect x="450" y="96" width="176" height="17" rx="4" fill="var(--s2)"/><text x="634" y="109" fill="var(--ink-1)" font-weight="700" font-variant-numeric="tabular-nums">11.0%</text>
+        <text x="722" y="109" fill="var(--s3)" font-size="12" font-weight="700">1.8×</text>
+      </g>
+      <g>
+        <text x="455" y="134" fill="var(--ink-1)" font-size="13" font-weight="600">馋 / 忍不住 / 焦虑与自责</text>
+        <rect x="356" y="140" width="94" height="17" rx="4" fill="var(--s1)"/><text x="314" y="153" fill="var(--ink-2)" font-variant-numeric="tabular-nums">5.9%</text>
+        <rect x="450" y="140" width="150" height="17" rx="4" fill="var(--s2)"/><text x="608" y="153" fill="var(--ink-1)" font-weight="700" font-variant-numeric="tabular-nums">9.4%</text>
+        <text x="722" y="153" fill="var(--s3)" font-size="12" font-weight="700">1.6×</text>
+      </g>
+      <g>
+        <text x="455" y="178" fill="var(--ink-1)" font-size="13" font-weight="600">食谱不可执行 / 难吃</text>
+        <rect x="408" y="184" width="42" height="17" rx="4" fill="var(--s1)"/><text x="366" y="197" fill="var(--ink-2)" font-variant-numeric="tabular-nums">2.6%</text>
+        <rect x="450" y="184" width="130" height="17" rx="4" fill="var(--s2)"/><text x="588" y="197" fill="var(--ink-1)" font-weight="700" font-variant-numeric="tabular-nums">8.1%</text>
+        <text x="722" y="197" fill="var(--s3)" font-size="12" font-weight="700">共识放大 3.1×</text>
+      </g>
+      <line x1="60" y1="212" x2="840" y2="212" stroke="var(--grid)" stroke-dasharray="4 4"/>
+      <text x="60" y="228" fill="var(--ink-3)" font-size="12">↑ 高共识：少数人说出了多数人的心声 —— 值得做</text>
+      <text x="60" y="246" fill="var(--ink-3)" font-size="12">↓ 低共识：人人抱怨，但没人真的为它点赞 —— 是入场券，不是差异化</text>
+
+      <g>
+        <text x="455" y="272" fill="var(--ink-2)" font-size="13">收费 / 会员墙</text>
+        <rect x="210" y="278" width="240" height="17" rx="4" fill="var(--s1)"/><text x="162" y="291" fill="var(--ink-1)" font-weight="700" font-variant-numeric="tabular-nums">15.0%</text>
+        <rect x="450" y="278" width="37" height="17" rx="4" fill="var(--s2)"/><text x="495" y="291" fill="var(--ink-2)" font-variant-numeric="tabular-nums">2.3%</text>
+        <text x="722" y="291" fill="var(--crit)" font-size="12" font-weight="700">共识衰减 0.15×</text>
+      </g>
+      <g>
+        <text x="455" y="310" fill="var(--ink-2)" font-size="13">份量 / 克数估不准</text>
+        <rect x="320" y="316" width="130" height="17" rx="4" fill="var(--s1)"/><text x="278" y="329" fill="var(--ink-2)" font-variant-numeric="tabular-nums">8.1%</text>
+        <rect x="450" y="316" width="30" height="17" rx="4" fill="var(--s2)"/><text x="488" y="329" fill="var(--ink-2)" font-variant-numeric="tabular-nums">1.9%</text>
+        <text x="722" y="329" fill="var(--crit)" font-size="12" font-weight="700">0.23×</text>
+      </g>
+      <g>
+        <text x="455" y="348" fill="var(--ink-2)" font-size="13">热量数值不准</text>
+        <rect x="372" y="354" width="78" height="17" rx="4" fill="var(--s1)"/><text x="330" y="367" fill="var(--ink-2)" font-variant-numeric="tabular-nums">4.9%</text>
+        <rect x="450" y="354" width="8" height="17" rx="3" fill="var(--s2)"/><text x="466" y="367" fill="var(--ink-2)" font-variant-numeric="tabular-nums">0.5%</text>
+        <text x="722" y="367" fill="var(--crit)" font-size="12" font-weight="700">共识衰减 0.10×</text>
+      </g>
+
+      <text x="60" y="404" fill="var(--ink-3)" font-size="12">提及率 = 命中该主题的评论数 ÷ 307 ｜ 共识度 = 该主题评论获赞总数 ÷ 59,433</text>
+      <text x="60" y="422" fill="var(--ink-3)" font-size="12">放大倍率 = 共识度 ÷ 提及率。&gt;1 表示「说的人少但认同的人多」。</text>
+    </g>
+  </svg>
+  </div>
+  <div class="cap">这张图推翻了按条数统计得到的结论。若只数条数，「收费」会排第一（15%）——但它只占 2.3% 的声量，说明抱怨的人虽多，却没有引起广泛共鸣。</div>
+</div>
+
+<div class="finding warn">
+  <div class="t">最反直觉的一条：用户其实不在乎热量数字准不准</div>
+  <p>「热量数值不准」提及率 4.9%，但共识度只有 <b>0.5%</b>，衰减 10 倍；「份量估不准」也只有 1.9% 声量。
+  这不是说不准无所谓，而是说——<b>用户早就默认它不准了，并且已经自己找到了对付办法</b>，所以没人为这类抱怨点赞。</p>
+  <p>佐证：NIDDK 用 102 份精确称重餐食测四款主流应用，全部系统性低估（能量 250–345 kcal/餐、脂肪约 30 g/餐）。
+  而 B站用户的原话是「都是往低了算」「我只敢吃每日推论热量的 60-80%」「乘一个 1.5 倍的系数」。
+  <b>大家都知道它不准，然后接着用。</b></p>
+  <p style="color:var(--crit)"><b>产品含义：把「更准的识别」当作主打卖点，是在打一场用户已经不关心胜负的仗。</b>准确度是及格线，不是记忆点。</p>
+</div>
+
+<div class="finding go">
+  <div class="t">共识度最高的三件事，全都不是「工具功能」问题</div>
+  <div class="q o" style="margin-top:10px">减脂餐真没必要弄的太难吃……<b>减肥是没有结束的，在保持自己能长久坚持的前提下</b>，再追求干净清淡的饮食
+  <span class="src"><b>雷神喵喵</b> · 4141 赞（清洗后全场最高）</span></div>
+  <div class="q o">他们说少油少盐，导致我炒菜不敢放调料，炒个西红柿鸡蛋真是一点味道没有像在生吃，<b>导致我对炒菜这件事没了兴趣</b>
+  <span class="src"><b>命里知意</b> · 1893 赞</span></div>
+  <div class="q o">感觉可以开一个国家减脂食谱食堂或者定食。<b>自己做真的很麻烦</b>
+  <span class="src"><b>Dataself</b> · 1676 赞</span></div>
+  <div class="q o"><b>饿的时候只有一个烦恼：饿。吃多了就有无数烦恼：后悔、变胖、自责…… 还是饿着吧</b>
+  <span class="src"><b>Hawkiu</b> · 1612 赞</span></div>
+  <div class="q o">我会问自己：<b>燕麦黄瓜吃不吃，不吃就是馋</b>
+  <span class="src"><b>抹香鲸的晚餐</b> · 1529 赞</span></div>
+  <p style="margin-top:12px">前十高赞里有 <b>三条</b>属于「馋 / 忍不住 / 自责」这一类。这是全品类共识度第三高的议题，
+  而目前<b>没有任何一款产品在功能层面回应它</b>——所有产品都在解决「怎么记」，没有一款在解决「怎么忍」。</p>
+</div>
+
+<!-- =============== 2 =============== -->
+<h2 id="a2"><span class="num">02</span>数据分析二：共性与个性</h2>
+<p class="lead">把同一套主题词跑在三个平台的语料上，看每个主题在各平台的命中率。结论比预想的极端得多。</p>
+
+<div class="tw">
+<table>
+<thead><tr>
+  <th>主题</th>
+  <th class="num">B站<br><small>673 条评论</small></th>
+  <th class="num">小红书<br><small>853 条笔记</small></th>
+  <th class="num">公众号<br><small>200 篇文章</small></th>
+  <th>判定</th>
+</tr></thead>
+<tbody>
+<tr class="hl"><td><b>中餐 / 外卖 / 食堂场景</b></td><td class="num">5.2%</td><td class="num">4.0%</td><td class="num">5.0%</td>
+  <td><span class="tag g">唯一的真共性</span>三平台命中率最均衡</td></tr>
+<tr><td>份量 / 克数估不准</td><td class="num">6.2%</td><td class="num">3.0%</td><td class="num">5.0%</td>
+  <td><span class="tag b">准共性</span>但共识度低（见图 1）</td></tr>
+<tr><td>社交 / 陪伴 / 被看见</td><td class="num">3.4%</td><td class="num"><b>8.9%</b></td><td class="num">15.5%</td>
+  <td><span class="tag o">小红书个性</span></td></tr>
+<tr><td>收费 / 会员 / 订阅</td><td class="num"><b>10.1%</b></td><td class="num">0.7%</td><td class="num">3.5%</td>
+  <td><span class="tag o">B站个性</span>其他平台几乎不提</td></tr>
+<tr><td>广告 / 卖药 / 推销</td><td class="num">3.4%</td><td class="num">0.0%</td><td class="num">1.0%</td>
+  <td><span class="tag o">B站个性</span></td></tr>
+<tr><td>AI 能力期待</td><td class="num">3.9%</td><td class="num">0.5%</td><td class="num"><b>36.0%</b></td>
+  <td><span class="tag r">行业自说自话</span>用户侧几乎无声</td></tr>
+<tr><td>想要个性化指导</td><td class="num">5.1%</td><td class="num">1.8%</td><td class="num"><b>27.5%</b></td>
+  <td><span class="tag r">行业自说自话</span></td></tr>
+<tr><td>记录太麻烦 / 难坚持</td><td class="num">4.9%</td><td class="num">1.3%</td><td class="num">14.0%</td>
+  <td><span class="tag b">B站 + 专业侧</span></td></tr>
+<tr><td>焦虑 / 暴食 / 心理</td><td class="num">2.7%</td><td class="num">1.4%</td><td class="num">6.5%</td>
+  <td><span class="tag b">低频高共识</span>（提及少，赞数高）</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="finding warn">
+  <div class="t">共性结论：几乎不存在跨三平台的共同痛点</div>
+  <p>十二个主题跑完，<b>没有一个在三个平台同时成为显性议题（≥5%）</b>。唯一在三平台命中率接近的是「中餐 / 外卖 / 食堂场景」（5.2% / 4.0% / 5.0%）——
+  这是本次分析找到的<b>唯一真共性</b>，而且它恰好也是图 1 里共识度最高的主题（12.6%）。<b>两套独立方法指向同一个答案，这是本报告最硬的一条结论。</b></p>
+</div>
+
+<div class="finding warn">
+  <div class="t">个性结论：最大的「需求」其实是行业在自问自答</div>
+  <p>「AI 能力」在公众号命中 <b>36.0%</b>，在小红书只有 <b>0.5%</b>，在 B站 3.9%。
+  「想要个性化指导」公众号 27.5%，小红书 1.8%。<b>这两个被整个行业当作核心卖点的东西，在真实用户语料里几乎不存在。</b></p>
+  <p>公众号的高频不代表用户需求，它代表的是媒体、厂商与从业者的叙事密度——里面既有《18 岁少年靠 AI 年入 3000 万》的造富文，也有《五款主流 AI 同时出减肥食谱，<b>没有一款通过营养师验收</b>》的打脸文。
+  把公众号的热度当成需求信号，是这个赛道最容易犯的错。</p>
+</div>
+
+<!-- =============== 3 =============== -->
+<h2 id="a3"><span class="num">03</span>四类真实人群与各自的核心痛点</h2>
+<p class="lead">「减脂人群」不是一个人群。按语料证据可以清楚地切出四类，他们的诉求彼此冲突，不能用一套功能满足。</p>
+
+<div class="tw">
+<table>
+<thead><tr><th style="width:16%">人群</th><th style="width:20%">典型场景</th><th>核心痛点（带原声）</th><th style="width:15%">现有产品的覆盖</th></tr></thead>
+<tbody>
+<tr class="hl">
+  <td><b>A · 外食党</b><br><small>上班族 / 学生</small></td>
+  <td>食堂窗口、外卖 App、便利店；<b>不开火，也没打算开火</b></td>
+  <td>「在学校里面我真的<b>不知道该怎么去选择吃什么</b>」（1015 赞）<br>
+      「我在普通餐厅点一份菜，基本很难去记录，<b>估算都要想半天</b>」（13 赞）<br>
+      「<b>每天都吃食堂</b>得用什么减肥软件记录热量准确呢？」（该提问下无人回答）</td>
+  <td><span class="tag r">几乎空白</span>饭橘方向对但执行差</td></tr>
+<tr class="hl">
+  <td><b>B · 家常党</b><br><small>自己做饭 / 有家庭</small></td>
+  <td>家里一锅菜、全家一起吃；<b>不可能另起炉灶</b></td>
+  <td>「我是懒得搞健身餐，<b>我要搞的话我就要另起炉灶</b>，嫌烦」<br>
+      「少油少盐导致我炒菜不敢放调料……<b>对炒菜这件事没了兴趣</b>」（1893 赞）<br>
+      「把所有的量<b>减到一半</b>，其实还是吃家常便饭」</td>
+  <td><span class="tag r">被伤害</span>现有食谱在制造放弃</td></tr>
+<tr>
+  <td><b>C · 数据党</b><br><small>健身 / 撸铁 / 严肃减脂</small></td>
+  <td>称重、算三大素、训练日与非训练日区分</td>
+  <td>「不是热量准不准，而是<b>摄入克数估算的差多少</b>」<br>
+      「训练日要有热量盈余，非训练日保证缺口，<b>麻烦是麻烦了点</b>」<br>
+      「力量训练爱好者：<b>训记 + 薄荷健康 = 无敌</b>」（95 赞，必须装两个）</td>
+  <td><span class="tag b">部分覆盖</span>但需拼装多个 App</td></tr>
+<tr>
+  <td><b>D · 情绪党</b><br><small>反复减、易反弹</small></td>
+  <td>半夜想吃、聚餐破功、掉秤焦虑</td>
+  <td>「饿的时候只有一个烦恼：饿。吃多了就有无数烦恼：<b>后悔、变胖、自责</b>」（1612 赞）<br>
+      「我会问自己：燕麦黄瓜吃不吃，<b>不吃就是馋</b>」（1529 赞）<br>
+      「减脂以后发现自己的胃口就是比别人好……<b>我选择默默的忍住</b>」（1520 赞）</td>
+  <td><span class="tag r">完全空白</span>无产品回应</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="finding">
+  <div class="t">A + B 是同一个底层需求，且是最大的空白</div>
+  <p>外食党和家常党加起来覆盖了绝大多数中国用户的真实吃饭方式，他们的共同点是：
+  <b>饭已经在那儿了，不是他们设计的。</b>外食党面对的是食堂窗口和外卖列表，家常党面对的是全家一锅菜。
+  他们需要的都不是「今天做什么」，而是<b>「眼前这个，我怎么办」</b>。</p>
+  <p>而目前所有产品的食谱功能都建立在一个错误前提上：<b>假设用户会按方案去买菜、做饭、吃独食。</b>
+  连国家卫健委食谱都因此被吐槽「样数太多了，每个又一点点」「50g 草鱼，我怎么买」「<b>能做到的不需要，需要的做不到</b>」。</p>
+</div>
+
+<!-- =============== 4 =============== -->
+<h2 id="a4"><span class="num">04</span>竞品格局：四种活法</h2>
+<p class="lead">按「靠什么增长」而不是按功能来分，这个赛道只有四种活法。Keep 属运动赛道，不在此列。</p>
+
+<div class="figure">
+  <div class="ftitle">图 2 · 用户规模 vs 用户口碑：一张图看清各家处境</div>
+  <div class="fsub">横轴 App Store 评分人数（用户体量代理）· 纵轴 App Store 评分 · 数据取自中国区实时接口 2026-08-10</div>
+  <div class="svgwrap">
+  <svg viewBox="0 0 880 420" role="img" aria-label="竞品规模与口碑散点图">
+    <g font-family="system-ui,-apple-system,sans-serif" font-size="12">
+      <line x1="90" y1="350" x2="840" y2="350" stroke="var(--axis)"/>
+      <line x1="90" y1="40" x2="90" y2="350" stroke="var(--axis)"/>
+      <g stroke="var(--grid)" stroke-dasharray="3 3">
+        <line x1="90" y1="290" x2="840" y2="290"/><line x1="90" y1="230" x2="840" y2="230"/>
+        <line x1="90" y1="170" x2="840" y2="170"/><line x1="90" y1="110" x2="840" y2="110"/>
+      </g>
+      <g fill="var(--ink-3)" font-variant-numeric="tabular-nums">
+        <text x="52" y="354">4.2</text><text x="52" y="294">4.4</text><text x="52" y="234">4.6</text>
+        <text x="52" y="174">4.8</text><text x="52" y="114">5.0</text>
+        <text x="150" y="372">3千</text><text x="290" y="372">1万</text><text x="440" y="372">3万</text>
+        <text x="590" y="372">6万</text><text x="740" y="372">12万</text>
+      </g>
+      <text x="380" y="398" fill="var(--ink-3)" font-size="12.5">评分人数（对数刻度示意）</text>
+      <text x="20" y="30" fill="var(--ink-3)" font-size="12.5">评分</text>
+
+      <!-- 阿福 低分高量 -->
+      <circle cx="560" cy="341" r="13" fill="var(--s2)"/>
+      <text x="480" y="326" fill="var(--s2)" font-weight="700" font-size="13">蚂蚁阿福 ★4.23</text>
+      <text x="466" y="368" fill="var(--s2)" font-size="11.5">4.95 万评价 · 月活 3000 万</text>
+
+      <!-- 薄荷 -->
+      <circle cx="770" cy="191" r="12" fill="var(--s1)"/>
+      <text x="700" y="176" fill="var(--s1)" font-weight="700" font-size="13">薄荷健康 ★4.73</text>
+      <text x="722" y="215" fill="var(--ink-3)" font-size="11.5">11.98 万评价</text>
+
+      <!-- 体重小本 -->
+      <circle cx="600" cy="143" r="10" fill="var(--s3)"/>
+      <text x="536" y="130" fill="var(--s3)" font-size="12.5">体重小本 ★4.89</text>
+      <!-- 食卡卡 -->
+      <circle cx="500" cy="143" r="10" fill="var(--s3)"/>
+      <text x="418" y="166" fill="var(--s3)" font-size="12.5">食卡卡 ★4.89</text>
+      <!-- 小卡健康 -->
+      <circle cx="450" cy="182" r="10" fill="var(--s2)"/>
+      <text x="360" y="196" fill="var(--s2)" font-size="12.5">小卡健康 ★4.76</text>
+      <!-- 好轻 -->
+      <circle cx="455" cy="179" r="4" fill="var(--ink-3)"/>
+      <text x="466" y="212" fill="var(--ink-3)" font-size="11.5">好轻 ★4.77</text>
+      <!-- 自律茄子 -->
+      <circle cx="390" cy="155" r="9" fill="var(--s3)"/>
+      <text x="300" y="146" fill="var(--s3)" font-size="12.5">自律茄子 ★4.85</text>
+      <!-- 饭橘 -->
+      <circle cx="370" cy="227" r="8" fill="var(--ink-3)"/>
+      <text x="288" y="243" fill="var(--ink-3)" font-size="11.5">饭橘 ★4.69</text>
+      <!-- 柠檬 -->
+      <circle cx="420" cy="300" r="8" fill="var(--ink-3)"/>
+      <text x="340" y="316" fill="var(--ink-3)" font-size="11.5">柠檬轻断食 ★4.52</text>
+      <!-- 每日减脂 -->
+      <circle cx="250" cy="125" r="7" fill="var(--s3)"/>
+      <text x="160" y="118" fill="var(--s3)" font-size="11.5">每日减脂 ★4.94</text>
+
+      <!-- 区域标注 -->
+      <text x="620" y="66" fill="var(--ink-3)" font-size="12">口碑好 + 体量大 = 真正的对手</text>
+      <text x="620" y="86" fill="var(--ink-3)" font-size="12">（目前无人占据右上角）</text>
+      <text x="150" y="336" fill="var(--crit)" font-size="12" font-weight="600">← 补贴换量、口碑掉队</text>
+    </g>
+  </svg>
+  </div>
+  <div class="cap">最值得注意的是右上角是空的：<b>没有任何一家同时拥有大体量和好口碑</b>。体量最大的阿福评分最低（4.23），评分最高的食卡卡与体重小本体量只有阿福的一半左右。</div>
+</div>
+
+<h3>活法一 · 补贴换量：蚂蚁阿福（最大变量，也是最大机会）</h3>
+<div class="card">
+<p><b>规模：</b>月活约 3000 万，春节期间 App 用户数超 1 亿；截至 2026-07-28 超百万用户参与减重、累计减重 217 万斤。
+2026-07-29 上线「AI 拍饮食」，支持拍照/文字/语音录入并建立「热量账户」。何炅代言，数千万营销投入。</p>
+<p><b>但它的 App Store 评分只有 ★4.23（49,508 评价）</b>——是本次分析中所有主力产品的最低分，比薄荷低 0.5、比食卡卡低 0.66。</p>
+<p><b>增长方式：</b>1 分钱 / 9.9 元包邮体脂秤，月销百万台。B站关于阿福的内容几乎全部是薅羊毛开箱与规则测评，
+<b>没有一条在讨论它的饮食记录或 AI 识餐体验</b>——这本身就是信号。</p>
+<div class="q r">首页宣传只要 0.01 元。点进去看详情，<b>先支付 30.01 元，要绑定啥才能给你返现 30 元。然后再支付邮费 9.9 元，9.9+30.01＝实付 39.91 元！哪里是 1 分钱了？</b>
+<span class="src"><b>倾听-音乐</b> · BV18GT26KErc</span></div>
+<div class="q r">它明明可以靠<b>卖你个人数据推送广告</b>来对冲制造成本，却还要让你付 9.9
+<span class="src"><b>霜星艾斯</b> · 57 赞 · BV1jzTG6SELF</span></div>
+<div class="q r">毕竟 AI 的背后是大数据，然后就是<b>减肥广告，保险广告</b>
+<span class="src"><b>棋谱就离谱</b> · BV1kHKf69Ek4</span></div>
+<p>公开报道还记录了两类问题：体脂秤实测误差 0.5–0.6 kg、蓝牙连接失败与数据同步中断是「用户咨询最多的问题」；
+以及<b>有用户在群内反馈体脂秤数据问题后被官方账号拉黑并踢出群</b>。</p>
+<div class="finding go" style="margin-top:16px">
+  <div class="t">阿福对你意味着什么：它在替你做市场教育</div>
+  <p>阿福用补贴把上亿<b>从来没记录过饮食的普通人</b>拉进了这个品类，教会他们「拍一张照片可以知道热量」「体重要每天称」。
+  然后用一个 4.23 分的体验把其中一部分人推出来。</p>
+  <p><b>这批被教育过、但没被留住的用户，是这个赛道未来两年最大的一块流量红利。</b>他们的特征是：已有称重习惯、已接受 AI 识餐概念、但对大厂的数据用途存疑。
+  接住他们的产品必须具备两件事——<b>体验足够轻，以及在数据隐私上明确表态</b>。</p>
+</div>
+</div>
+
+<h3>活法二 · 数据壁垒：薄荷健康</h3>
+<div class="card">
+<p>★4.73 · 119,810 评价 · 244MB · 2011 年首发 · <b>食物库 100 万+ 条，以中国食物为主</b>，17 年积累。这是全行业唯一能覆盖长尾中餐的库。</p>
+<p><b>裂缝在商业化反噬：</b>B站 59 次提及中负面占绝大多数，且高度集中在卖药。</p>
+<div class="q o">薄荷是真的很极端，他们自家卖的不开火减肥套餐，<b>每日热量就 800 多，纯靠饿的</b>，而且 APP 内经常给你推荐<b>抑制食欲的减肥药、减肥针</b>
+<span class="src"><b>-和易-</b> · 126 赞</span></div>
+<div class="q o">之前用薄荷是因为能看到钾、钠之类的元素……<b>某一次更新之后界面大改版，再也找不到这个营养分析的界面</b>
+<span class="src"><b>蓝沧苓</b> · 314 赞 · 该评论下无人给出替代品，是明确的空缺</span></div>
+<p><b>它的识别能力其实很弱：</b>官方说「餐前拍一拍」可识别 1000+ 菜品，而文本库有 100 万+ 条——<b>识别覆盖率不到文本库的千分之一</b>。这是它的软肋。</p>
+</div>
+
+<h3>活法三 · 体验取胜：食卡卡 / 体重小本 / 自律茄子</h3>
+<div class="card">
+<p>这一档的共同点是评分最高（4.85–4.89）、体量中等、产品克制。</p>
+<ul class="clean">
+<li><b>食卡卡</b>（★4.89 / 43,412 / 114MB）：B站 4 个月实测 8 款 App、19 个维度的横评综合第一，关键指标是<b>一次记录只要 4 次点击</b>（其他家基本翻倍）。
+但取消买断制是被反复提起的失误——三条来自不同视频的独立评论：「没有买断根本就没付费欲望」「食卡卡<b>把自己玩死了</b>，现在只有包年，一年费用与薄荷只差 30 块钱」。</li>
+<li><b>体重小本</b>（★4.89 / 66,786 / 12 元月）：<b>官方库 50 万 + 社区共享 60 万</b>，UGC 反超自建库——这是绕开「17 年积累」壁垒的唯一已验证路径。
+但用户对 UGC 质量有明确不信任：「再加上用户贡献那种就更是乱七八糟」（101 赞）。</li>
+<li><b>自律茄子</b>（★4.85 / 19,452 / <b>57MB</b>）：2025-11 上架，9 个月做到近 2 万评价，体积只有薄荷的四分之一。<b>轻量本身就是差异化。</b></li>
+</ul>
+</div>
+
+<h3>活法四 · 技术叙事：小卡健康（最该盯的对手）</h3>
+<div class="card">
+<p>★4.76 · 29,764 评价 · 2024-10 首发（21 个月做到近 3 万评价）· 约 98 元永久。</p>
+<p>唯一把「份量」当核心技术问题公开讲的产品，技术描述分三层：<b>VLM 语义识别</b>（识别「由几种食材组成、烹饪方式、配料、容器类型」）→ <b>50 万级中文私有库匹配校准</b> → <b>AR 深度感知 + 餐具基准比例估算体积与重量</b>，另有条码扫描与<b>外卖订单解析</b>。
+官方自陈其目的是「解决<b>识别准但份量乱猜</b>的问题」。</p>
+<p><b>可攻击点：</b>① AR 方案要求「俯拍 + 完整餐具入镜」，食堂排队、外卖桌面等真实场景很难满足；
+② 定价被吐槽「我买个称，要我下小卡健康，<b>永久 98 元，称才 20 多</b>」；
+③ B站提及仅 2 次——<b>在核心讨论圈层里几乎没有声量，增长可能主要来自投放</b>。</p>
+</div>
+
+<!-- =============== 5 =============== -->
+<h2 id="a5"><span class="num">05</span>定位推导：从数据到一句话</h2>
+<p class="lead">下面每一步都只用前四节已经出现过的数据，不引入新假设。</p>
+
+<div class="step"><div class="n">1</div><div class="b">
+  <b>排除「更准的识别」作为主打。</b>共识度 0.5%（衰减 10 倍），且 NIDDK 证明四款主流应用全部系统性低估——<b>这是能力边界，不是投入问题</b>。中餐的油在照片里不可见，10g 油 = 90 大卡。准确度做到及格即可，不作为记忆点。
+</div></div>
+<div class="step"><div class="n">2</div><div class="b">
+  <b>排除「AI 生成食谱」作为主打。</b>用户侧命中率极低（小红书 0.5%、B站 3.9%），公众号 36% 是行业自说自话；60 份 AI 食谱无一通过营养师验收；连国家级食谱都被吐槽不可执行。<b>零壁垒 + 有风险 + 用户执行不了。</b>
+</div></div>
+<div class="step"><div class="n">3</div><div class="b">
+  <b>排除「低价 / 免费」作为主打。</b>收费提及率 15% 但共识度仅 2.3%——它是入场券（基础记录必须免费），但不构成差异化，也吸引不来用户。
+</div></div>
+<div class="step"><div class="n">4</div><div class="b">
+  <b>锁定唯一真共性：中餐 / 外卖 / 食堂场景。</b>两套独立方法交叉验证：跨平台命中率最均衡（5.2% / 4.0% / 5.0%），且共识度最高（12.6%）。人群 A（外食党）+ B（家常党）覆盖绝大多数中国用户。
+</div></div>
+<div class="step"><div class="n">5</div><div class="b">
+  <b>锁定第二支点：把「记录」的摩擦降到行业基准以下。</b>共识度 11.0%（放大 1.8 倍）；食卡卡已把基准定在 <b>4 次点击</b>，必须打平或更低。
+</div></div>
+<div class="step"><div class="n">6</div><div class="b">
+  <b>锁定第三支点：回应「馋 / 忍不住 / 自责」。</b>共识度 9.4%，前十高赞里占三条，<b>而现有产品覆盖为零</b>。这是唯一一个「高共识 + 零供给」的象限。
+</div></div>
+
+<div class="pos">
+  <div class="lbl">定 位</div>
+  <div class="main">不做更准的热量计算器，做<span style="color:var(--s3)">中国人真实餐桌上的「这顿怎么办」助手</span>。<br>
+  面对食堂窗口、外卖列表和家里那一锅菜，它告诉你<span style="color:var(--s3)">选哪个、怎么改、还能吃多少</span>；<br>
+  在你想吃的时候，它站在你这边，而不是罚你。</div>
+  <div class="sub2">
+    <b>一句话产品名解释：</b>「不用另起炉灶的中餐饮食助手」。<br>
+    <b>三个支点：</b>① 场景（外卖/食堂/家常菜的选与改）② 摩擦（≤4 次点击）③ 情绪（馋的时候怎么办）。<br>
+    <b>刻意不做：</b>原创食谱生成、精确到克的采购清单、以准确率为卖点的营销、把基础记录锁进会员。
+  </div>
+</div>
+
+<div class="finding">
+  <div class="t">为什么这个定位站得住</div>
+  <p><b>对阿福：</b>它靠补贴把上亿小白拉进来，但 ★4.23 留不住。你不跟它抢新客，<b>你接它漏出来的、已经被教育过的用户</b>。</p>
+  <p><b>对薄荷：</b>它有 100 万条文本库，但识别只覆盖 1000+ 菜品，且商业化已反噬口碑。<b>你在它最弱的识别与场景层打，不在它最强的数据库存量上硬拼。</b></p>
+  <p><b>对食卡卡：</b>它口碑最好但定价失守，用户正在公开找替代品。<b>这是最直接的承接窗口。</b></p>
+  <p><b>对小卡健康：</b>它已识别出「份量」这个真问题，但用 AR 解，对拍摄条件苛刻。<b>你用更宽容的方式解同一个问题（档位化校准 + 餐具基准 + 习惯学习），覆盖它覆盖不到的场景。</b></p>
+</div>
+
+<!-- =============== 6 =============== -->
+<h2 id="a6"><span class="num">06</span>功能清单与验收标准</h2>
+
+<div class="tw">
+<table>
+<thead><tr><th class="num">P</th><th style="width:24%">功能</th><th style="width:20%">支撑数据</th><th>验收标准</th></tr></thead>
+<tbody>
+<tr class="hl"><td class="num">P0</td><td><b>外卖 / 食堂 / 家常菜三场景专用录入</b></td>
+  <td>唯一真共性；共识度 12.6%；跨平台 5.2/4.0/5.0%</td>
+  <td>外卖订单一键解析；食堂窗口拍照多选；家常菜按「全家共做、我吃了多少」录入</td></tr>
+<tr class="hl"><td class="num">P0</td><td><b>记录路径 ≤ 4 次点击</b></td>
+  <td>共识度 11.0%（放大 1.8×）；食卡卡已设基准</td>
+  <td>从打开到完成一餐记录，实测点击 ≤ 4</td></tr>
+<tr class="hl"><td class="num">P0</td><td><b>「怎么改」而不是「换菜」</b></td>
+  <td>共识度 8.1%（放大 3.1×，全场最高）</td>
+  <td>对已识别餐食给出 ≤3 条减法建议（少半碗饭 / 滗掉汤汁 / 去鸡皮），<b>不推荐新菜品</b></td></tr>
+<tr class="hl"><td class="num">P0</td><td><b>「馋的时候」模块</b></td>
+  <td>共识度 9.4%，前十高赞占三条，<b>现有产品覆盖为零</b></td>
+  <td>非说教式：提供「还能吃多少」的余额、低成本替代、以及「吃了也没关系」的复位路径</td></tr>
+<tr><td class="num">P0</td><td>基础记录永久免费 + 一键导出</td><td>提及率 15%（入场券）；「怕公司倒闭丢 10 年记录」</td><td>不登录可用；CSV/JSON 导出不设门槛</td></tr>
+<tr><td class="num">P1</td><td>份量 / 油量档位一键校准</td><td>NIDDK 全部低估；用户自发「乘 1.5 倍」</td><td>1 次点击切换清蒸/家常/重油/油炸与小/中/大份，结果以<b>区间</b>呈现</td></tr>
+<tr><td class="num">P1</td><td>轻量化（目标 &lt; 80MB）</td><td>自律茄子 57MB 拿下 ★4.85；B站把包体积单列为评分维度</td><td>首版安装包 &lt; 80MB</td></tr>
+<tr><td class="num">P1</td><td>数据隐私明确表态</td><td>阿福用户「卖你个人数据推送广告」「减肥广告、保险广告」</td><td>首页可见的隐私承诺；不接入药品/保险类广告</td></tr>
+<tr><td class="num">P2</td><td>安全边界：摄入下限拦截 + 未成年人模式</td><td>薄荷 800 大卡套餐争议；《AI 定制减肥餐青少年应谨慎使用》</td><td>低于 BMR 触发拦截；连续 3 天极低摄入强提醒</td></tr>
+<tr><td class="num">P2</td><td>微量元素（钾/钠）视图</td><td>薄荷收进会员墙后无人接盘，314 赞求替代</td><td>免费提供基础视图</td></tr>
+<tr><td class="num">P2</td><td>周/月维度与「维持期模式」</td><td>「以周甚至月为单位统计比较方便」；「记了几天心里有数了，懒得用 app」（158 赞）</td><td>提供非每日记录的低频模式</td></tr>
+<tr><td class="num">P3</td><td>一键生成可分享的每日餐食卡片</td><td>小红书唯一显性议题（社交 8.9%）；801 条笔记提 App 的仅 2 条</td><td>输出对齐「Day130 / 晨重 / 三餐 / 饮水」的现成体裁</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>三平台冷启动（同一产品，三套话术）</h3>
+<div class="tw">
+<table>
+<thead><tr><th style="width:13%">平台</th><th style="width:30%">这里的显性议题（实测）</th><th>该怎么讲</th></tr></thead>
+<tbody>
+<tr><td><b>B站</b></td><td>收费 10.1% · 份量 6.2% · 中餐场景 5.2%</td>
+  <td>做<b>可验证的横评式内容</b>：「4 次点击」「&lt;80MB」「基础功能永久免费」「外卖订单一键导入」。这里的用户会逐条核对，说得越具体越有效。</td></tr>
+<tr><td><b>小红书</b></td><td>社交陪伴 8.9%（唯一显性）· 提 App 仅 2/801</td>
+  <td>不讲功能，讲<b>「记录可以被发出去」</b>。产品要成为笔记的<b>生产工具</b>，而不是笔记的竞争者。</td></tr>
+<tr><td><b>公众号</b></td><td>AI 能力 36% · 个性化 27.5%（行业自说自话）</td>
+  <td>站在<b>专业质疑那一侧</b>：公开份量校准方法论、承认识别的能力边界、引用 NIDDK 研究。在「五款 AI 食谱无一通过验收」的舆论场里，诚实是最稀缺的素材。</td></tr>
+</tbody>
+</table>
+</div>
+
+<hr>
+<h3>数据口径</h3>
+<p><small>
+<b>B站：</b>官方搜索与评论接口，24 个视频（累计播放约 750 万），去重后 673 条评论；做主题分析时进一步筛出与饮食管理实质相关的 307 条（含关键词且长度 ≥8 字），累计获赞 59,433。已剔除 BV1xZCXBiEec（通义千问广告视频，评论集中于广告本身）。
+<b>小红书：</b>笔记详情页 SSR 解析（关键词搜索接口需签名，未绕过），三频道采样 801 条笔记 + 52 篇正文，合计 853 条文本。
+<b>公众号：</b>搜狗微信索引，20 组关键词 × 10 条，共 200 篇标题与摘要。
+<b>竞品参数：</b>App Store 中国区官方接口，2026-08-10；食物库规模与 AI 能力描述取自厂商商店页自述，未独立验证，不同厂商「条」的定义可能不一致。
+<b>NIDDK 研究：</b>Hengist 等，2026 年 7 月，102 份代谢病房精确制备餐食 × 4 款应用，经 ScienceDaily / EurekAlert! / Medscape / News-Medical 报道。
+<br><br>
+<b>方法局限：</b>① 主题归类基于关键词匹配，存在误配与漏配，绝对数值仅供比较，不宜单独引用；② 点赞数受视频曝光量影响，跨视频比较存在偏差，故仅在同一语料池内做相对排序；③ 小红书为频道采样而非主题精搜，覆盖率受限；④ 公众号语料反映的是媒体与厂商叙事密度，不能等同于用户需求——本报告已据此单独标注。
+</small></p>
+
+<footer>
+本文档为产品定位输入，不构成营养或医学建议。P2 安全边界相关条目建议在立项阶段引入专业营养师评审。<br>
+配套：《饮食记录与AI识餐_三平台用户需求调研.html》（需求全景）、《AI食谱与热量识别_竞品分析与产品策略.html》（竞品逐个拆解）。
+</footer>
+
+</div>
+</body>
+</html>
