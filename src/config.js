@@ -201,6 +201,15 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
   // Vibecoding 作品集（原 Works）。file 指向 public/works 下的静态页面，在 /vibecoding/:slug 内嵌展示
   works: [
     {
+      slug: "kaoyan-politics-map",
+      title: "27 考研政治 · 五科考点图谱",
+      description:
+        "把马原、毛中特、史纲、思法、习概论五本教材拆成 222 个考点、1303 条要背的知识点，每个考点点开即是划分标准、几个特征、辨析陷阱这一级颗粒度，其中 100 条易错辨析单独标红。星级为近五年（2021—2025）真题复现频率的经验归纳：★★★★★ 高频标红、★★★★ 重点标橙。左侧点书名展开章节直达，顶部可按频率筛选或全文搜知识点原文，滚动自动高亮当前章。选中任意文字可写批注，存在本机浏览器并支持导出 JSON。纯前端单文件实现。",
+      tags: ["考研政治", "知识图谱", "学习工具"],
+      file: "/works/files/kaoyan-politics-map.html",
+      date: "2026-08-14",
+    },
+    {
       slug: "ai-recipe-calorie-demand",
       title: "AI 食谱 + 热量识别 · 需求数据分析与产品定位",
       description:
