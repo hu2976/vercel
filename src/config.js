@@ -185,6 +185,20 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
     },
   ],
 
+  // 八个爱好：首页「我喜欢的」板块
+  // key 对应 Glyphs.jsx 里的炫彩线稿图标；c1/c2 是这张卡 hover 时的描边渐变
+  // note 尽量写具体的小事，别写形容词
+  interests: [
+    { key: "book",   name: "书籍",     note: "读得慢，边读边折角，每本都留记号", c1: "#5b6bff", c2: "#9b5de5" },
+    { key: "film",   name: "电影",     note: "习惯一个人看完，再一个人想很久",   c1: "#9b5de5", c2: "#ff4d8d" },
+    { key: "coffee", name: "咖啡",     note: "冰美式唯粉，连毕设做的都是咖啡",   c1: "#ff9e44", c2: "#f2c14e" },
+    { key: "paint",  name: "画画",     note: "不为画得好，只为让手别停下来",     c1: "#ff4d8d", c2: "#f2c14e" },
+    { key: "flower", name: "鲜花",     note: "桌上永远得有一支，换水也算仪式",   c1: "#ff4d8d", c2: "#ff8fc0" },
+    { key: "drama",  name: "戏剧",     note: "在《龙须沟畔的读书声》里演大妞子", c1: "#d6355b", c2: "#f2c14e" },
+    { key: "mic",    name: "主持演讲", note: "站过 TEDx 的红毯，也串场相声园子", c1: "#06d6a0", c2: "#3ab7f0" },
+    { key: "doc",    name: "纪录片",   note: "看别人的一生，过自己的日子",       c1: "#3ab7f0", c2: "#5b6bff" },
+  ],
+
   // Design 设计作品（等作品文件夹到位后补充，图片放 public/images/ 下）
   designs: [
     { title: "视觉设计 ①", image: "/images/design-1.jpg", tags: ["平面设计"] },
@@ -198,10 +212,31 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
     { title: "黔品", image: "/images/design-9.jpg", tags: ["视觉设计"] },
   ],
 
-  // Vibecoding 作品集（原 Works）。file 指向 public/works 下的静态页面，在 /vibecoding/:slug 内嵌展示
+  // Vibecoding 作品集。file 指向 public/works 下的静态页面，在 /vibecoding/:slug 内嵌展示
+  //
+  // kind:     "play" = 造物间，纯粹想做才做的
+  //           "tool" = 工具箱，为学习/工作造的趁手工具
+  // featured: 造物间里置顶的那一件（首页也会引到它）
+  // archived: 工具箱里收进「更早的练习」折叠区，不删，只是不占地方
+  // cover:    16:9 封面图，放 public/images/ 下
   works: [
     {
+      slug: "coffee-flavor-map",
+      kind: "play",
+      featured: true,
+      title: "世界咖啡风味地图",
+      oneLiner: "从赤道两侧的四十三个产区，到你手里这杯的味道",
+      description:
+        "沿着南北回归线之间的咖啡带走一圈：先看世界全貌，再分非洲、亚太、中美洲、南美洲四个图幅下钻，最后落到 43 个具体产区——每个产区能看到它的气候、主栽豆种与对应的风味描述、当地惯用的处理法与烘焙度，配一张实拍。配色沿用杯测风味轮的逻辑：非洲玫红是花果酸，美洲琥珀是坚果焦糖，亚太苔绿是木质香料，所以颜色本身就在告诉你会喝到什么。纯前端单文件实现，地图路径全部手工调过。",
+      note: "这是我第一件不为考试、不为交付，只因为自己想看它长什么样而做出来的东西。",
+      tags: ["咖啡", "交互地图", "风味轮"],
+      cover: "/images/work-coffee-map.jpg",
+      file: "/works/files/coffee-flavor-map.html",
+      date: "2026-08-15",
+    },
+    {
       slug: "kaoyan-politics-map",
+      kind: "tool",
       title: "27 考研政治 · 五科考点图谱",
       description:
         "把马原、毛中特、史纲、思法、习概论五本教材拆成 222 个考点、1303 条要背的知识点，每个考点点开即是划分标准、几个特征、辨析陷阱这一级颗粒度，其中 100 条易错辨析单独标红。星级为近五年（2021—2025）真题复现频率的经验归纳：★★★★★ 高频标红、★★★★ 重点标橙。左侧点书名展开章节直达，顶部可按频率筛选或全文搜知识点原文，滚动自动高亮当前章。选中任意文字可写批注，存在本机浏览器并支持导出 JSON。纯前端单文件实现。",
@@ -211,6 +246,7 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
     },
     {
       slug: "ai-recipe-calorie-demand",
+      kind: "tool",
       title: "AI 食谱 + 热量识别 · 需求数据分析与产品定位",
       description:
         "对 307 条实质相关的 B站评论做点赞加权重排、853 条小红书笔记与 200 篇公众号文章做跨平台共现分析，得出一个反直觉的结论：抱怨最多的痛点，恰恰是最不该做的。内容包括说的人多≠认同的人多的加权对比、共性与个性需求拆分、四类真实人群及其核心痛点、竞品四种活法（补贴换量／数据壁垒／体验取胜／技术叙事）、从数据到一句话的定位推导，以及功能清单与验收标准。纯前端单文件实现。",
@@ -220,6 +256,8 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
     },
     {
       slug: "nutrition-exam-practice",
+      kind: "tool",
+      archived: true,
       title: "2026 注册营养师 · 考点配套练习",
       description: "把「注册营养师考试宝典」全 159 个考点的配套习题整理成一套可交互刷题页：按 7 大板块（营养学基础、食物营养价值、特殊人群与环境营养、公共营养、临床营养、营养与慢性病、食品卫生）分类，共 730 道真题。默认只显示题干与选项，点「查看答案及解析」逐题展开答案与解析；选项可点选，展开后自动标注正误。纯前端单文件实现。",
       tags: ["Nutrition", "Quiz", "练习题"],
@@ -228,6 +266,8 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
     },
     {
       slug: "global-mortality-race",
+      kind: "tool",
+      archived: true,
       title: "近30年全球全因死亡率 · 动态排行",
       description: "基于 IHME 全球疾病负担研究（GBD 2023）的年龄标准化全因死亡率，1994–2023 逐年 Top 15 国家的条形图竞赛动画：按地区着色、含国旗、名次与地区构成变化，直观呈现撒哈拉以南非洲与冲突国家长期高居榜首。数据经 Our World in Data 指标接口获取，纯前端单文件实现。",
       tags: ["Data Viz", "GBD", "Bar Chart Race"],
@@ -236,6 +276,8 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
     },
     {
       slug: "nutrition-engine-eval",
+      kind: "tool",
+      archived: true,
       title: "食物营养估算引擎 · 评测仪表盘",
       description: "一套针对「食物营养估算」大模型能力的评测方案：覆盖多种烹饪方式对热量的影响，含测试用例、真值标注与自动评分，最终汇总成可交互的评测看板。",
       tags: ["Nutrition", "LLM Eval", "Dashboard"],
