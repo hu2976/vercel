@@ -16,7 +16,9 @@ const config = {
   },
 
   // 首页右侧个人照片（放到 public/images/ 后填路径，如 "/images/portrait.jpg"）
-  photo: "/images/portrait-cut.png",
+  // 白大褂那张的 Vision 抠图，WebP 保留了羽化边缘且只有 PNG 的 1/8 大小
+  // 上一版首图仍在 public/images/portrait-cut.png，想换回来改这里即可
+  photo: "/images/portrait-lab.webp",
 
   // 个人简介：英文默认展示，鼠标悬停浮现中文
   bio: `Hi, I'm Hu Jinghan — a devoted fan of iced Americano, and you're warmly welcome to my little world.

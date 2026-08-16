@@ -43,6 +43,10 @@
   --page-glow-1: rgba(155, 93, 229, 0.07);
   --page-glow-2: rgba(58, 183, 240, 0.07);
 
+  /* 人像投影：第一层紧贴轮廓，白大褂在白底上全靠它才不融掉 */
+  --portrait-shadow: drop-shadow(0 1px 2.5px rgba(18, 22, 30, 0.26))
+    drop-shadow(0 3px 10px rgba(18, 22, 30, 0.14)) drop-shadow(0 22px 42px rgba(18, 22, 30, 0.18));
+
   /* 花体字面板 */
   --script-bg: #ffffff;
   --script-fg: #0c1a24;
@@ -82,6 +86,8 @@
 
   --page-glow-1: rgba(155, 93, 229, 0.16);
   --page-glow-2: rgba(58, 183, 240, 0.13);
+
+  --portrait-shadow: drop-shadow(0 22px 46px rgba(0, 0, 0, 0.75));
 
   --script-bg: #0b0c0f;
   --script-fg: #ffffff;
@@ -814,6 +820,7 @@ h1, h2, h3, h4 {
 .portrait-stage { position: relative; display: grid; place-items: center; }
 /* 抠图 PNG 底部是平切的，日夜两种底色下都会露出一条硬边，这里把它渐隐掉 */
 .portrait-fade {
+  filter: var(--portrait-shadow);
   -webkit-mask-image: linear-gradient(to bottom, #000 74%, rgba(0, 0, 0, 0.35) 92%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 74%, rgba(0, 0, 0, 0.35) 92%, transparent 100%);
 }
@@ -822,8 +829,8 @@ h1, h2, h3, h4 {
   inset: 5%;
   border-radius: 46% 54% 58% 42% / 48% 44% 56% 52%;
   background-image: linear-gradient(140deg, var(--i7), var(--i1) 45%, var(--i2) 72%, var(--i5));
-  opacity: 0.3;
-  filter: blur(34px);
+  opacity: 0.46;
+  filter: blur(38px);
   animation: blobMorph 14s ease-in-out infinite;
 }
 .dark .portrait-blob { opacity: 0.42; }

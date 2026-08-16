@@ -128,7 +128,7 @@ export default function Home() {
               alt={config.nameZh}
               label="个人照片待补充"
               className="relative z-10 w-full"
-              imgClassName="portrait-fade block h-auto w-full [filter:drop-shadow(0_16px_26px_rgba(0,0,0,0.24))]"
+              imgClassName="portrait-fade block h-auto w-full"
               placeholderClassName="aspect-[4/5] overflow-hidden rounded-[2rem]"
             />
           </div>
