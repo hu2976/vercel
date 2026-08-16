@@ -83,12 +83,12 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
   // 图片放 public/images/ 下，把 image 填成 "/images/xxx.jpg"
   // 留 null 就显示占位框，不会报错，可以先上线再慢慢补图
   awards: [
-    { text: "TEDx 演讲者", image: null },
-    { text: "四项发明专利", image: null },
-    { text: "一等奖学金", image: null },
-    { text: "全国「挑战杯」竞赛特等奖、一等奖及二等奖", image: null },
-    { text: "北京市营养师技能大赛第一名", image: null },
-    { text: "十余项省部级及以上奖项……", image: null },
+    { text: "TEDx 演讲者", image: "/images/award-tedx.jpg" },
+    { text: "四项发明专利", image: "/images/award-patent.jpg" },
+    { text: "一等奖学金", image: "/images/award-scholarship.jpg" },
+    { text: "全国「挑战杯」竞赛特等奖、一等奖及二等奖", image: "/images/award-challenge-cup.jpg" },
+    { text: "北京市营养师技能大赛第一名", image: "/images/award-nutritionist.jpg" },
+    { text: "十余项省部级及以上奖项……", image: "/images/award-more.jpg" },
   ],
 
   // 四维度个人故事：首页四个泡泡 → 点击进入 /story/:slug 独立页面
