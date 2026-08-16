@@ -96,8 +96,9 @@
 :root {
   --font-sans: "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC",
     "Segoe UI", Roboto, "Helvetica Neue", "Microsoft YaHei", Arial, sans-serif;
-  --font-serif: "Cormorant Garamond", "Noto Serif SC", "Songti SC", "STSong",
-    "SimSun", Georgia, serif;
+  /* 思源宋体自带完整拉丁字形，让它同时管中英 —— 一旦在前面插一支
+     西文衬线（之前是 Cormorant Garamond），中英混排就会变成两支字体打架 */
+  --font-serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", Georgia, serif;
 }
 
 body {
@@ -144,12 +145,11 @@ h1, h2, h3, h4 {
   letter-spacing: 0.012em;
 }
 
-/* About 英文斜体衬线 */
+/* About 英文段落：跟中文版共用同一支宋体，hover 中英切换时字体不跳。
+   不加 italic —— 思源宋体没有真斜体，浏览器合成的伪斜很难看 */
 .bio-serif {
-  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  font-style: italic;
-  font-size: 1.06em;
-  letter-spacing: 0.012em;
+  font-family: var(--font-serif);
+  letter-spacing: 0.015em;
 }
 
 /* ============================================================
@@ -516,19 +516,42 @@ h1, h2, h3, h4 {
 }
 .award-item[data-on="true"] .award-text { font-weight: 600; }
 
+/* 图片区不做框：没有边框也没有底色，只有图片本身浮在留白里。
+   容器高度固定，所以横图竖图来回切时版面不会跳 */
 .award-stage {
   position: sticky;
   top: 5.5rem;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 0.9rem;
-  background-color: var(--surface-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 23rem;
 }
+.award-shot {
+  display: block;
+  max-height: 20rem;
+  max-width: 100%;
+  width: auto;
+  border-radius: 0.5rem;
+  filter: drop-shadow(0 16px 34px rgba(16, 20, 30, 0.16));
+  animation: shotIn 0.55s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.dark .award-shot { filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.7)); }
 @keyframes shotIn {
-  from { opacity: 0; transform: scale(1.03); }
+  from { opacity: 0; transform: translateY(18px) scale(0.955); }
   to { opacity: 1; transform: none; }
 }
-.award-shot { animation: shotIn 0.5s cubic-bezier(0.2, 0.8, 0.3, 1); }
+.award-cap {
+  margin-top: 1rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  animation: capIn 0.55s cubic-bezier(0.2, 0.8, 0.3, 1) 0.08s both;
+}
+@keyframes capIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
 
 /* ============================================================
    教育航线 —— 曲线 + 纸飞机

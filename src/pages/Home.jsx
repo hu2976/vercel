@@ -170,7 +170,7 @@ export default function Home() {
         <Reveal>
           <div className="mb-3 flex justify-center"><span className="eyebrow">Along the way</span></div>
           <h2 className="sec-title mb-3 text-center">拿过的</h2>
-          <p className="mb-12 text-center text-sm text-faint">点任意一条，右边会换成当时的照片</p>
+          <p className="mb-12 text-center text-sm text-faint">鼠标扫过任意一条，右边会换成当时的照片</p>
         </Reveal>
         <Reveal>
           <Awards />

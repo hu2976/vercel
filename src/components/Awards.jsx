@@ -5,32 +5,31 @@ import ImageFrame from './ImageFrame'
 /**
  * 奖项
  *
- * 左边一列可点的条目，右边跟着换图。桌面上图片是 sticky 的，
- * 顺着列表往下点，图不会跑出视野；窄屏放不下两栏，就把图挪到
- * 被点那一条的正下方展开。图片还没到位时显示占位框，不影响先上线。
+ * 左边一列条目，鼠标扫到哪条右边就换成哪张图（也能点，键盘 focus 同样触发，
+ * 移动端没有 hover 就退回点击）。右边不做框——没有边框也没有底色，
+ * 图片直接浮在留白里，换图时上移淡入。容器高度固定，所以横竖图交替也不会让版面上下跳。
  */
 export default function Awards() {
   const awards = config.awards || []
   const [active, setActive] = useState(0)
   const current = awards[active]
 
-  // 固定 4:3 的框 + object-contain：竖版奖状和横版合影都能完整显示，
-  // 而且换条目时版面高度不会跳
   const shot = (a) => (
-    <div key={a.text} className="award-shot aspect-[4/3] w-full">
-      <ImageFrame
-        src={a.image}
-        alt={a.text}
-        label="图片待补充"
-        className="block h-full w-full"
-        imgClassName="block h-full w-full object-contain"
-        placeholderClassName="h-full w-full"
-      />
-    </div>
+    <ImageFrame
+      /* 换条目时重新挂载，好让淡入动画重播。
+         前缀不能省 —— 图片和下面的图注是同层级兄弟，
+         用同一个 key 会让 React 的 reconciliation 错乱、旧图卸载不掉 */
+      key={`shot-${a.text}`}
+      src={a.image}
+      alt={a.text}
+      label="图片待补充"
+      className="award-shot"
+      placeholderClassName="grid h-52 w-72 place-items-center rounded-lg"
+    />
   )
 
   return (
-    <div className="grid gap-8 md:grid-cols-[1fr_0.82fr] md:gap-10">
+    <div className="grid gap-8 md:grid-cols-[1fr_0.9fr] md:gap-10">
       <ul className="flex flex-col">
         {awards.map((a, i) => (
           <li key={a.text} className={i > 0 ? 'border-t' : undefined} style={i > 0 ? { borderColor: 'var(--border)' } : undefined}>
@@ -39,27 +38,27 @@ export default function Awards() {
               className="award-item"
               data-on={active === i}
               aria-pressed={active === i}
+              onMouseEnter={() => setActive(i)}
+              onFocus={() => setActive(i)}
               onClick={() => setActive(i)}
             >
               <span className="award-num">{String(i + 1).padStart(2, '0')}</span>
               <span className="award-text">{a.text}</span>
             </button>
 
-            {/* 窄屏：图片就地展开在这一条下面 */}
+            {/* 窄屏没有 hover，图片就地展开在被点的那条下面 */}
             {active === i && (
-              <div className="mb-3 overflow-hidden rounded-lg border md:hidden" style={{ borderColor: 'var(--border)', background: 'var(--surface-2)' }}>
-                {shot(a)}
-              </div>
+              <div className="mb-4 flex justify-center md:hidden">{shot(a)}</div>
             )}
           </li>
         ))}
       </ul>
 
-      {/* 桌面：右侧固定的图片位 */}
+      {/* 桌面：右侧跟着走的图片位 */}
       <div className="hidden md:block">
         <div className="award-stage">
           {shot(current)}
-          <p className="px-4 py-3 text-xs leading-relaxed text-faint">{current.text}</p>
+          <p key={`cap-${current.text}`} className="award-cap">{current.text}</p>
         </div>
       </div>
     </div>
