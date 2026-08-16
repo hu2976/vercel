@@ -2,7 +2,7 @@ import config from '../config'
 
 export default function Footer() {
   return (
-    <footer className="above-ink mt-auto border-t" style={{ borderColor: 'var(--border)' }}>
+    <footer className="above-fx mt-auto border-t" style={{ borderColor: 'var(--border)' }}>
       <div className="mx-auto max-w-5xl px-4 py-8">
         <div className="flex flex-col items-center gap-3 text-sm sm:flex-row sm:justify-between">
           <div className="text-soft">

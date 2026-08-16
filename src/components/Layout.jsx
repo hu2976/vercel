@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Header from './Header'
 import Footer from './Footer'
-import InkCanvas from './InkCanvas'
+import SparkleCanvas from './SparkleCanvas'
 import { IriDefs } from './Glyphs'
 
 export default function Layout({ children }) {
@@ -26,11 +26,11 @@ export default function Layout({ children }) {
     <div className="flex min-h-screen flex-col">
       {/* 全站图标共用的炫彩渐变定义 */}
       <IriDefs />
-      {/* 水墨层：铺在所有内容之下，鼠标经过留笔迹 */}
-      <InkCanvas dark={dark} />
+      {/* 星光层：鼠标划过洒下星尘，偶尔有只蝴蝶飘过 */}
+      <SparkleCanvas dark={dark} />
 
       <Header dark={dark} onToggleTheme={() => setDark(d => !d)} />
-      <main className="above-ink flex-1">
+      <main className="above-fx flex-1">
         {children}
       </main>
       <Footer />

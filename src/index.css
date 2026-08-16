@@ -34,10 +34,6 @@
   --i6: #5b6bff; /* 靛 */
   --i7: #9b5de5; /* 紫 */
 
-  /* 水墨层 */
-  --ink-rgb: 19, 21, 25;
-  --ink-blend: multiply;
-  --ink-strength: 0.16;
 
   --glow: none;
   --shadow-card: 0 1px 2px rgba(16, 20, 30, 0.04), 0 12px 32px -20px rgba(16, 20, 30, 0.22);
@@ -79,9 +75,6 @@
   --i6: #8b99ff;
   --i7: #b47bf0;
 
-  --ink-rgb: 240, 244, 255;
-  --ink-blend: screen;
-  --ink-strength: 0.2;
 
   --glow: 0 0 26px -8px rgba(255, 92, 138, 0.55);
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 14px 36px -22px rgba(0, 0, 0, 0.8);
@@ -141,11 +134,14 @@ h1, h2, h3, h4 {
   line-height: 1.95;
 }
 
-/* 花体（Hero 问候语，保留个人印记） */
+/* 花体（Hero 问候语，保留个人印记）
+   拉丁走 Caveat Brush、中文走 Ma Shan Zheng —— 两支的笔画粗细和黑度接近，
+   接在一行里像同一支笔。字重必须留 400：两支都只有这一个字重，
+   设 700 会让浏览器合成伪粗体，笔锋糊掉。 */
 .font-script {
-  font-family: "Dancing Script", "Ma Shan Zheng", "STKaiti", "KaiTi", cursive;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-family: "Caveat Brush", "Ma Shan Zheng", "STKaiti", "KaiTi", cursive;
+  font-weight: 400;
+  letter-spacing: 0.012em;
 }
 
 /* About 英文斜体衬线 */
@@ -169,20 +165,22 @@ h1, h2, h3, h4 {
 .border-token { border-color: var(--border); }
 
 /* ============================================================
-   水墨画布 —— 鼠标笔触 + 晕开的墨点，铺在所有内容之下
+   星光层 —— 鼠标划过的星尘 / 常驻微光 / 偶尔飘过的蝴蝶
+   日间不做混合（星点就是实色亮片），夜间叠加成辉光
    ============================================================ */
-.ink-canvas {
+.sparkle-canvas {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  mix-blend-mode: var(--ink-blend);
-  opacity: 0.85;
+  opacity: 0.95;
 }
-/* 内容层抬到墨层之上 */
-.above-ink { position: relative; z-index: 1; }
+.dark .sparkle-canvas { mix-blend-mode: screen; }
+
+/* 内容层抬到星光之上 */
+.above-fx { position: relative; z-index: 1; }
 
 /* ============================================================
    章节标记：细线 + 小字，替换原来满屏的渐变胶囊
