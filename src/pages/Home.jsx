@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Phone, Mail, Copy, Check, ArrowRight, Crown, Award, Medal, Trophy, Star, Gem } from 'lucide-react'
+import { Phone, Mail, Copy, Check, ArrowRight } from 'lucide-react'
 import config from '../config'
 import ImageFrame from '../components/ImageFrame'
 import FlightTimeline from '../components/FlightTimeline'
 import Interests from '../components/Interests'
-import { storyGlyphs } from '../components/Glyphs'
+import Dimensions from '../components/Dimensions'
+import Awards from '../components/Awards'
 
 // 小红书图标
 const XhsIcon = ({ size = 15 }) => (
@@ -13,14 +14,6 @@ const XhsIcon = ({ size = 15 }) => (
     <path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm3.2 4.2H5.8v5.6h1.4v-2.2h1v2.2h1.4V9.2H9.2v2h-1v-2Zm4.3 0h-1.4v5.6h3.4v-1.3h-2V9.2Zm4.9 0h-1.9v5.6h1.4v-1.8h.5c1.2 0 2-.7 2-1.9s-.8-1.9-2-1.9Zm-.1 2.7h-.4v-1.5h.4c.5 0 .8.3.8.8s-.3.7-.8.7Z" />
   </svg>
 )
-
-// 四维气泡：尺寸错落、漂浮时长各异
-const bubbleStyles = {
-  spotlight: { c1: '#ff4d8d', c2: '#ff9e44', size: 172, offset: 0, dur: 6.5 },
-  partner: { c1: '#3ab7f0', c2: '#5b6bff', size: 128, offset: 58, dur: 5.2 },
-  'flavor-lab': { c1: '#06d6a0', c2: '#3ab7f0', size: 154, offset: 18, dur: 7.2 },
-  intern: { c1: '#9b5de5', c2: '#ff4d8d', size: 120, offset: 72, dur: 5.8 },
-}
 
 // 技能：字号错落 + 少量带彩，其余素色
 const skillStyle = [
@@ -31,7 +24,6 @@ const skillStyle = [
   { fs: 1.32, tone: 't4', dur: 5.6 }, { fs: 0.9, tone: '', dur: 7.0 },
   { fs: 1.02, tone: '', dur: 6.3 }, { fs: 1.12, tone: 't2', dur: 6.8 },
 ]
-const awardIcons = [Crown, Award, Medal, Trophy, Star, Gem]
 
 // 进入视口就淡入上移，一次性
 function Reveal({ children, className = '', delay = 0 }) {
@@ -145,41 +137,6 @@ export default function Home() {
         <p className="mt-12 text-center text-[0.7rem] tracking-[0.2em] text-faint">向下滚动 ↓</p>
       </section>
 
-      {/* ===== 四维度 ===== */}
-      <section className="mx-auto max-w-5xl px-5 py-20 sm:py-24">
-        <Reveal>
-          <div className="mb-3 flex justify-center"><span className="eyebrow">Four sides of me</span></div>
-          <h2 className="sec-title mb-3 text-center">
-            四个维度的我
-          </h2>
-          <p className="mb-16 text-center text-sm text-faint">扫过气泡看简介，点进去是完整的故事</p>
-        </Reveal>
-
-        <div className="flex flex-wrap items-start justify-center gap-x-8 gap-y-10 sm:gap-x-12">
-          {config.stories.map((s, i) => {
-            const st = bubbleStyles[s.slug] || { c1: '#5b6bff', c2: '#9b5de5', size: 140, offset: 0, dur: 6 }
-            const Glyph = storyGlyphs[s.slug]
-            return (
-              <Reveal key={s.slug} delay={i * 90}>
-                <Link
-                  to={`/story/${s.slug}`}
-                  className="bubble-wrap group flex w-36 flex-col items-center text-center sm:w-40"
-                  style={{ marginTop: `${st.offset}px` }}
-                >
-                  <span className="floaty inline-block" style={{ animationDuration: `${st.dur}s` }}>
-                    <span className="bubble" style={{ width: st.size, height: st.size, '--b1': st.c1, '--b2': st.c2 }}>
-                      <span className="bubble-glyph">{Glyph && <Glyph size={Math.round(st.size * 0.3)} />}</span>
-                    </span>
-                  </span>
-                  <h3 className="font-serif-cn mt-4 text-[1.05rem] text-body transition-colors group-hover:text-accent">{s.title}</h3>
-                  <p className="bubble-caption mt-1.5 px-1 text-xs leading-relaxed text-soft">{s.tagline}</p>
-                </Link>
-              </Reveal>
-            )
-          })}
-        </div>
-      </section>
-
       {/* ===== 教育航线 ===== */}
       <section className="border-y py-20 sm:py-24" style={{ borderColor: 'var(--border)', background: 'var(--bg-soft)' }}>
         <div className="mx-auto max-w-4xl px-5">
@@ -232,33 +189,27 @@ export default function Home() {
       </section>
 
       {/* ===== 奖项 ===== */}
-      <section className="mx-auto max-w-2xl px-5 pb-20 sm:pb-24">
+      <section className="mx-auto max-w-5xl px-5 pb-20 sm:pb-24">
         <Reveal>
           <div className="mb-3 flex justify-center"><span className="eyebrow">Along the way</span></div>
-          <h2 className="sec-title mb-14 text-center">拿过的</h2>
+          <h2 className="sec-title mb-3 text-center">拿过的</h2>
+          <p className="mb-12 text-center text-sm text-faint">点任意一条，右边会换成当时的照片</p>
         </Reveal>
-        <div className="flex flex-col">
-          {config.awards.map((award, i) => {
-            const Icon = awardIcons[i % awardIcons.length]
-            const featured = i === 0
-            return (
-              <Reveal key={award} delay={i * 60}>
-                <div
-                  className={`award-row flex items-center gap-4 ${featured ? 'pb-6' : 'py-4'} ${i > 0 ? 'border-t' : ''}`}
-                  style={i > 0 ? { borderColor: 'var(--border)' } : undefined}
-                >
-                  <span className="award-badge" style={featured ? { width: '3.2rem', height: '3.2rem' } : undefined}>
-                    <Icon size={featured ? 24 : 18} style={{ stroke: 'url(#g-iri)' }} />
-                  </span>
-                  <div className="min-w-0">
-                    {featured && <span className="mb-1 block text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-faint">代表性荣誉</span>}
-                    <span className={`leading-relaxed text-body ${featured ? 'font-serif-cn text-xl' : 'text-[0.95rem]'}`}>{award}</span>
-                  </div>
-                </div>
-              </Reveal>
-            )
-          })}
-        </div>
+        <Reveal>
+          <Awards />
+        </Reveal>
+      </section>
+
+      {/* ===== 四个维度 ===== */}
+      <section className="mx-auto max-w-5xl px-5 py-20 sm:py-24">
+        <Reveal>
+          <div className="mb-3 flex justify-center"><span className="eyebrow">Four sides of me</span></div>
+          <h2 className="sec-title mb-3 text-center">四个维度的我</h2>
+          <p className="mb-14 text-center text-sm text-faint">每一面点进去，都是一段完整的故事</p>
+        </Reveal>
+        <Reveal>
+          <Dimensions />
+        </Reveal>
       </section>
 
       {/* ===== 我喜欢的 + 咖啡地图 ===== */}

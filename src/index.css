@@ -369,62 +369,166 @@ h1, h2, h3, h4 {
 .dark .iri-icon { filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.14)); }
 
 /* ============================================================
-   四维气泡 —— 保留玻璃质感，emoji 换成炫彩线稿
+   四个维度 —— 2×2 杂志版面，大图标压在右下角出血
    ============================================================ */
-@keyframes floaty {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-13px); }
-}
-.floaty { animation: floaty 6s ease-in-out infinite; }
-
-.bubble {
+.dim {
   position: relative;
-  border-radius: 9999px;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;                 /* 图标越界的部分在这里被裁掉 */
   isolation: isolate;
-  background:
-    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 42%),
-    radial-gradient(circle at 74% 80%, color-mix(in srgb, var(--b2, #7b5bff) 42%, transparent), transparent 64%),
-    linear-gradient(140deg, color-mix(in srgb, var(--b1, #5b8cff) 34%, transparent), color-mix(in srgb, var(--b2, #7b5bff) 26%, transparent));
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow:
-    inset 0 2px 16px rgba(255, 255, 255, 0.5),
-    inset 6px -12px 28px color-mix(in srgb, var(--b1, #5b8cff) 22%, transparent),
-    0 18px 44px -20px var(--b1, #5b8cff);
-  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.45s ease;
+  padding: 1.6rem 1.5rem 1.4rem;
+  min-height: 14.2rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background-color: var(--surface);
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1),
+    border-color 0.45s ease, box-shadow 0.45s ease;
 }
-.dark .bubble { border-color: rgba(255, 255, 255, 0.16); }
-.bubble::after {
+.dim::before {                      /* hover 时亮起的渐变描边 */
   content: "";
   position: absolute;
-  top: 11%;
-  left: 15%;
-  width: 36%;
-  height: 26%;
-  border-radius: 9999px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 72%);
-  filter: blur(1.5px);
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--hc1), var(--hc2));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.45s ease;
   pointer-events: none;
 }
-.bubble-wrap:hover .bubble {
-  transform: scale(1.1);
-  box-shadow:
-    inset 0 2px 16px rgba(255, 255, 255, 0.62),
-    inset 5px -10px 28px rgba(0, 0, 0, 0.12),
-    0 32px 74px -22px var(--b1, #5b8cff);
+.dim:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+.dim:hover::before { opacity: 1; }
+
+.dim-glyph {
+  position: absolute;
+  right: -1.3rem;
+  bottom: -1.7rem;
+  z-index: -1;
+  line-height: 0;
+  opacity: 0.12;
+  transform: rotate(-8deg);
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.3, 1);
+  pointer-events: none;
 }
-.bubble-glyph { transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.3, 1); }
-.bubble-wrap:hover .bubble-glyph { transform: scale(1.1) rotate(-4deg); }
-.bubble-caption {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+.dark .dim-glyph { opacity: 0.16; }
+.dim:hover .dim-glyph { opacity: 0.3; transform: rotate(-3deg) scale(1.06); }
+
+.dim-index {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--text-faint);
 }
-.bubble-wrap:hover .bubble-caption { opacity: 1; transform: translateY(0); }
+.dim-title {
+  margin-top: 0.65rem;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.32rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  transition: color 0.3s ease;
+}
+.dim:hover .dim-title { color: var(--accent); }
+.dim-tagline {
+  margin-top: 0.55rem;
+  max-width: 27rem;
+  font-size: 0.83rem;
+  line-height: 1.75;
+  color: var(--text-soft);
+}
+.dim-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+.dim-key {
+  border-radius: 0.35rem;
+  border: 1px solid var(--border);
+  padding: 0.22rem 0.5rem;
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  background-color: var(--bg);
+  transition: border-color 0.3s ease, color 0.3s ease;
+}
+.dim:hover .dim-key { border-color: var(--border-strong); color: var(--text-soft); }
+.dim-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding-top: 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-faint);
+  transition: color 0.4s ease;
+}
+.dim:hover .dim-more { color: var(--accent); }
+
+/* ============================================================
+   奖项 —— 左边点条目，右边换图
+   ============================================================ */
+.award-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.85rem 0.9rem 0.85rem 0.8rem;
+  border-radius: 0.6rem;
+  text-align: left;
+  color: var(--text-soft);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.award-item:hover { background-color: var(--surface-2); color: var(--text); }
+.award-item[data-on="true"] { background-color: var(--surface-2); color: var(--text); }
+.award-item::before {               /* 选中时左侧那道炫彩竖条 */
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  border-radius: 2px;
+  transform: translateY(-50%);
+  background-image: linear-gradient(var(--i1), var(--i2), var(--i5));
+  transition: height 0.35s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+.award-item[data-on="true"]::before { height: 62%; }
+.award-num {
+  flex-shrink: 0;
+  width: 1.4rem;
+  font-family: var(--font-serif);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+}
+.award-text {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+.award-item[data-on="true"] .award-text { font-weight: 600; }
+
+.award-stage {
+  position: sticky;
+  top: 5.5rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background-color: var(--surface-2);
+}
+@keyframes shotIn {
+  from { opacity: 0; transform: scale(1.03); }
+  to { opacity: 1; transform: none; }
+}
+.award-shot { animation: shotIn 0.5s cubic-bezier(0.2, 0.8, 0.3, 1); }
 
 /* ============================================================
    教育航线 —— 曲线 + 纸飞机
@@ -716,7 +820,7 @@ h1, h2, h3, h4 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .floaty, .skill-float, .portrait-blob, .node-pulse { animation: none !important; }
+  .skill-float, .portrait-blob, .node-pulse { animation: none !important; }
   .hobby:hover [class*="an-"] { animation: none !important; }
   .reveal { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }

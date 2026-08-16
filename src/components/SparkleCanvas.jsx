@@ -6,7 +6,6 @@ import { useEffect, useRef } from 'react'
  * 铺在全站内容之下的一张 fixed canvas。三样东西：
  *   1. 星尘 —— 鼠标划过沿轨迹洒下的四角星，缓缓上浮、自转、淡出
  *   2. 常驻微光 —— 十来颗几乎不动的小星在原地呼吸，鼠标不动时页面也不死
- *   3. 蝴蝶 —— 隔一会儿有一只扇着翅膀从屏幕一侧飘过，是彩蛋不是主角
  *
  * 关键：每帧 clearRect 整屏重画。上一版水墨是「不清屏、只淡出」，笔迹会
  * 层层叠加糊成一片（就是那股霉斑感）；这里所有东西都有干净的边缘，画完就没。
@@ -95,8 +94,6 @@ export default function SparkleCanvas({ dark }) {
 
     let px = -1
     let py = -1
-    let butterfly = null
-    let nextFly = 9000 + Math.random() * 8000 // 首只出现得早一点，让人知道有这回事
 
     const addDust = (x, y, opts = {}) => {
       if (dust.length >= MAX_DUST) dust.shift()
@@ -111,89 +108,6 @@ export default function SparkleCanvas({ dark }) {
         spin: (Math.random() - 0.5) * 0.035,
         color: HUES[(Math.random() * HUES.length) | 0],
       })
-    }
-
-    /* ---------- 蝴蝶 ---------- */
-    const spawnButterfly = () => {
-      const ltr = Math.random() < 0.5
-      const baseY = height * (0.18 + Math.random() * 0.6)
-      butterfly = {
-        ltr,
-        x: ltr ? -60 : width + 60,
-        baseY,
-        t: 0,
-        speed: 0.55 + Math.random() * 0.45, // px/帧
-        amp: 26 + Math.random() * 46,
-        freq: 0.006 + Math.random() * 0.005,
-        scale: 0.95 + Math.random() * 0.5, // 翼展约 48–72px
-        phase: 0,
-        flapRate: 0.19 + Math.random() * 0.08,
-        c1: HUES[(Math.random() * HUES.length) | 0],
-        c2: HUES[(Math.random() * HUES.length) | 0],
-        y: baseY,
-        angle: 0,
-      }
-    }
-
-    // 单侧翅膀（右半）：上翅大、前缘向外上冲出，下翅小一圈收成圆尾，
-    // 两片在身体处相接 —— 分离的四片会看成一朵花，这是关键
-    const wingPath = (s) => {
-      ctx.beginPath()
-      ctx.moveTo(0, -4 * s)
-      ctx.bezierCurveTo(2 * s, -21 * s, 15 * s, -23 * s, 21 * s, -14 * s)
-      ctx.bezierCurveTo(25 * s, -8 * s, 20 * s, -1.5 * s, 11 * s, 0.5 * s)
-      ctx.bezierCurveTo(5 * s, 1.5 * s, 1 * s, -0.5 * s, 0, -4 * s)
-      ctx.fill()
-      ctx.beginPath()
-      ctx.moveTo(0, 0)
-      ctx.bezierCurveTo(6 * s, 1 * s, 13 * s, 4.5 * s, 13.5 * s, 10.5 * s)
-      ctx.bezierCurveTo(13.8 * s, 15.5 * s, 8.5 * s, 18.5 * s, 4.5 * s, 15 * s)
-      ctx.bezierCurveTo(1.5 * s, 12 * s, 0.4 * s, 6 * s, 0, 0)
-      ctx.fill()
-    }
-
-    const drawButterfly = (b) => {
-      const s = b.scale
-      const flap = 0.24 + 0.76 * Math.abs(Math.sin(b.phase))
-      const body = darkRef.current ? '#e6ebf5' : '#2a2f38'
-      ctx.save()
-      ctx.translate(b.x, b.y)
-      // 身体顺着飞行方向；翅膀在身体两侧张开，所以整体再转 90°
-      ctx.rotate(b.angle + Math.PI / 2)
-      ctx.globalAlpha = darkRef.current ? 0.92 : 0.82
-
-      for (const side of [1, -1]) {
-        ctx.save()
-        ctx.scale(side * flap, 1) // 扇翅就是把半边翅膀横向压扁
-        const g = ctx.createLinearGradient(0, -14 * s, 22 * s, 16 * s)
-        g.addColorStop(0, b.c1)
-        g.addColorStop(1, b.c2)
-        ctx.fillStyle = g
-        wingPath(s)
-        ctx.fillStyle = 'rgba(255,255,255,.5)' // 翼尖小斑
-        ctx.beginPath(); ctx.ellipse(15 * s, -12 * s, 2.6 * s, 2 * s, -0.5, 0, Math.PI * 2); ctx.fill()
-        ctx.restore()
-      }
-
-      // 身体：头胸腹三段收细
-      ctx.fillStyle = body
-      ctx.beginPath()
-      ctx.moveTo(0, -8 * s)
-      ctx.bezierCurveTo(2 * s, -7 * s, 2.2 * s, 2 * s, 0.9 * s, 12 * s)
-      ctx.bezierCurveTo(0.4 * s, 15 * s, -0.4 * s, 15 * s, -0.9 * s, 12 * s)
-      ctx.bezierCurveTo(-2.2 * s, 2 * s, -2 * s, -7 * s, 0, -8 * s)
-      ctx.fill()
-      ctx.beginPath(); ctx.arc(0, -8.5 * s, 1.9 * s, 0, Math.PI * 2); ctx.fill()
-
-      // 触角
-      ctx.strokeStyle = body
-      ctx.lineWidth = 0.75 * s
-      ctx.lineCap = 'round'
-      ctx.beginPath()
-      ctx.moveTo(0.5 * s, -9.5 * s); ctx.quadraticCurveTo(4 * s, -14 * s, 6.5 * s, -15.5 * s)
-      ctx.moveTo(-0.5 * s, -9.5 * s); ctx.quadraticCurveTo(-4 * s, -14 * s, -6.5 * s, -15.5 * s)
-      ctx.stroke()
-      ctx.restore()
     }
 
     /* ---------- 输入 ---------- */
@@ -275,27 +189,6 @@ export default function SparkleCanvas({ dark }) {
         ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); starPath(ctx, r); ctx.fill(); ctx.restore()
       }
       ctx.globalAlpha = 1
-
-      // 3) 蝴蝶：隔一阵子来一只
-      if (!reduce) {
-        if (!butterfly) {
-          nextFly -= dt * 16.67
-          if (nextFly <= 0) { spawnButterfly(); nextFly = 26000 + Math.random() * 26000 }
-        } else {
-          const b = butterfly
-          b.t += dt
-          b.phase += b.flapRate * dt
-          const step = b.speed * dt * (b.ltr ? 1 : -1)
-          b.x += step
-          const prevY = b.y
-          b.y = b.baseY + Math.sin(b.x * b.freq) * b.amp
-          b.angle = Math.atan2(b.y - prevY, step || 0.001)
-          ctx.globalCompositeOperation = 'source-over' // 蝴蝶要实心，别被 lighter 冲淡
-          drawButterfly(b)
-          ctx.globalCompositeOperation = isDark ? 'lighter' : 'source-over'
-          if ((b.ltr && b.x > width + 70) || (!b.ltr && b.x < -70)) butterfly = null
-        }
-      }
 
       ctx.globalCompositeOperation = 'source-over'
       raf = requestAnimationFrame(frame)
