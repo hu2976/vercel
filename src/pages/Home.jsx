@@ -137,29 +137,6 @@ export default function Home() {
         <p className="mt-12 text-center text-[0.7rem] tracking-[0.2em] text-faint">向下滚动 ↓</p>
       </section>
 
-      {/* ===== 教育航线 ===== */}
-      <section className="border-y py-20 sm:py-24" style={{ borderColor: 'var(--border)', background: 'var(--bg-soft)' }}>
-        <div className="mx-auto max-w-4xl px-5">
-          <Reveal>
-            <div className="mb-3 flex justify-center"><span className="eyebrow">Flight log</span></div>
-            <h2 className="sec-title mb-3 text-center">我飞到哪儿了</h2>
-            <p className="mb-12 text-center text-sm text-faint">实线是已经飞过的，虚线还没解锁</p>
-          </Reveal>
-
-          <FlightTimeline />
-
-          <Reveal>
-            <div className="mx-auto mt-10 max-w-sm text-center">
-              <p className="font-serif-cn text-xl text-body">{timeline.current.school}</p>
-              <p className="mt-1.5 text-sm text-soft">{timeline.current.college}</p>
-              <p className="text-sm text-soft">{timeline.current.major}</p>
-              <span className="sec-rule mx-auto mt-5" />
-              <p className="mt-5 text-xs text-faint">{timeline.note}</p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ===== 技能 ===== */}
       <section className="mx-auto max-w-4xl px-5 py-20 sm:py-24">
         <Reveal>
@@ -198,6 +175,29 @@ export default function Home() {
         <Reveal>
           <Awards />
         </Reveal>
+      </section>
+
+      {/* ===== 教育航线 ===== */}
+      <section className="border-y py-20 sm:py-24" style={{ borderColor: 'var(--border)', background: 'var(--bg-soft)' }}>
+        <div className="mx-auto max-w-4xl px-5">
+          <Reveal>
+            <div className="mb-3 flex justify-center"><span className="eyebrow">Flight log</span></div>
+            <h2 className="sec-title mb-3 text-center">我飞到哪儿了</h2>
+            <p className="mb-12 text-center text-sm text-faint">实线是已经飞过的，虚线还没解锁</p>
+          </Reveal>
+
+          <FlightTimeline />
+
+          <Reveal>
+            <div className="mx-auto mt-10 max-w-sm text-center">
+              <p className="font-serif-cn text-xl text-body">{timeline.current.school}</p>
+              <p className="mt-1.5 text-sm text-soft">{timeline.current.college}</p>
+              <p className="text-sm text-soft">{timeline.current.major}</p>
+              <span className="sec-rule mx-auto mt-5" />
+              <p className="mt-5 text-xs text-faint">{timeline.note}</p>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
       {/* ===== 四个维度 ===== */}
