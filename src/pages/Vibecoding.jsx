@@ -45,6 +45,45 @@ function WorkCard({ work, compact = false }) {
   )
 }
 
+// 造物间大卡：封面 + 标题 + 一句话 + 正文 + 旁注
+function HeroCard({ work }) {
+  return (
+    <Link to={`/vibecoding/${work.slug}`} className="hero-work group">
+      <ImageFrame
+        src={work.cover}
+        alt={work.title}
+        label="预览图待补充"
+        className="block w-full"
+        imgClassName="hero-work-shot"
+        placeholderClassName="aspect-[16/9]"
+      />
+      <div className="px-6 py-6 sm:px-8 sm:py-7">
+        <div className="mb-2.5 flex items-baseline justify-between gap-4">
+          <h2 className="font-serif-cn text-2xl text-body transition-colors group-hover:text-accent">
+            {work.title}
+          </h2>
+          <span className="shrink-0 text-[0.7rem] tabular-nums text-faint">{fmtDate(work.date)}</span>
+        </div>
+        {work.oneLiner && <p className="mb-4 text-[0.95rem] text-soft">{work.oneLiner}</p>}
+        {work.description && (
+          <p className="text-[0.86rem] leading-[1.85] text-soft">{work.description}</p>
+        )}
+        {work.note && (
+          <p className="mt-4 border-l-2 pl-3 text-[0.8rem] leading-relaxed text-faint" style={{ borderColor: 'var(--i2)' }}>
+            {work.note}
+          </p>
+        )}
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          {work.tags?.map((t) => <span key={t} className="chip">{t}</span>)}
+          <span className="link-underline ml-auto text-[0.85rem]">
+            {work.cta || '打开看看'} <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 export default function Vibecoding() {
   const works = config.works || []
   const [params, setParams] = useSearchParams()
@@ -94,45 +133,8 @@ export default function Vibecoding() {
         <div className="space-y-10">
           {featured ? (
             <>
-              <Link to={`/vibecoding/${featured.slug}`} className="hero-work group">
-                <ImageFrame
-                  src={featured.cover}
-                  alt={featured.title}
-                  label="预览图待补充"
-                  className="block w-full"
-                  imgClassName="hero-work-shot"
-                  placeholderClassName="aspect-[16/9]"
-                />
-                <div className="px-6 py-6 sm:px-8 sm:py-7">
-                  <div className="mb-2.5 flex items-baseline justify-between gap-4">
-                    <h2 className="font-serif-cn text-2xl text-body transition-colors group-hover:text-accent">
-                      {featured.title}
-                    </h2>
-                    <span className="shrink-0 text-[0.7rem] tabular-nums text-faint">{fmtDate(featured.date)}</span>
-                  </div>
-                  {featured.oneLiner && <p className="mb-4 text-[0.95rem] text-soft">{featured.oneLiner}</p>}
-                  {featured.description && (
-                    <p className="text-[0.86rem] leading-[1.85] text-soft">{featured.description}</p>
-                  )}
-                  {featured.note && (
-                    <p className="mt-4 border-l-2 pl-3 text-[0.8rem] leading-relaxed text-faint" style={{ borderColor: 'var(--i2)' }}>
-                      {featured.note}
-                    </p>
-                  )}
-                  <div className="mt-5 flex flex-wrap items-center gap-2">
-                    {featured.tags?.map((t) => <span key={t} className="chip">{t}</span>)}
-                    <span className="link-underline ml-auto text-[0.85rem]">
-                      走进地图 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-
-              {restPlay.length > 0 && (
-                <div className="space-y-4">
-                  {restPlay.map((w) => <WorkCard key={w.slug} work={w} />)}
-                </div>
-              )}
+              <HeroCard work={featured} />
+              {restPlay.map((w) => <HeroCard key={w.slug} work={w} />)}
 
               <p className="pt-2 text-center text-xs leading-relaxed text-faint">
                 还在造下一个。想到什么好玩的就会出现在这里。

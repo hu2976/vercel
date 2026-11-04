@@ -1,6 +1,6 @@
 // ============================================
 // 个人网站内容配置 —— 想改文案/图片，改这里就行
-// 图片放到 public/images/ 下，然后把对应字段填成 "/images/xxx.jpg"
+// 图片放到 public/images/ 下，然后把对应字段填成 "/images/xxx.webp"
 // 字段留空（null 或 ""）会自动显示占位图，不会报错
 // =============================================
 
@@ -15,7 +15,7 @@ const config = {
     intro: "我是胡静函",
   },
 
-  // 首页右侧个人照片（放到 public/images/ 后填路径，如 "/images/portrait.jpg"）
+  // 首页右侧个人照片（放到 public/images/ 后填路径，如 "/images/portrait.webp"）
   // 白大褂那张的 Vision 抠图，WebP 保留了羽化边缘且只有 PNG 的 1/8 大小
   // 上一版首图仍在 public/images/portrait-cut.png，想换回来改这里即可
   photo: "/images/portrait-lab.webp",
@@ -82,15 +82,15 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
   ],
 
   // 荣誉奖项：首页点左边任意一条，右边会换成对应的图片
-  // 图片放 public/images/ 下，把 image 填成 "/images/xxx.jpg"
+  // 图片放 public/images/ 下，把 image 填成 "/images/xxx.webp"
   // 留 null 就显示占位框，不会报错，可以先上线再慢慢补图
   awards: [
-    { text: "TEDx 演讲者", image: "/images/award-tedx.jpg" },
-    { text: "四项发明专利", image: "/images/award-patent.jpg" },
-    { text: "一等奖学金", image: "/images/award-scholarship.jpg" },
-    { text: "全国「挑战杯」竞赛特等奖、一等奖及二等奖", image: "/images/award-challenge-cup.jpg" },
-    { text: "北京市营养师技能大赛第一名", image: "/images/award-nutritionist.jpg" },
-    { text: "十余项省部级及以上奖项……", image: "/images/award-more.jpg" },
+    { text: "TEDx 演讲者", image: "/images/award-tedx.webp" },
+    { text: "四项发明专利", image: "/images/award-patent.webp" },
+    { text: "一等奖学金", image: "/images/award-scholarship.webp" },
+    { text: "全国「挑战杯」竞赛特等奖、一等奖及二等奖", image: "/images/award-challenge-cup.webp" },
+    { text: "北京市营养师技能大赛第一名", image: "/images/award-nutritionist.webp" },
+    { text: "十余项省部级及以上奖项……", image: "/images/award-more.webp" },
   ],
 
   // 四维度个人故事：首页四个泡泡 → 点击进入 /story/:slug 独立页面
@@ -100,17 +100,17 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
       title: "聚光灯下的独白",
       emoji: "🎤",
       tagline: "从 TEDx 红毯到晚会舞台，用声音去影响人",
-      cover: null, // "/images/story-spotlight.jpg"
+      cover: null, // "/images/story-spotlight.webp"
       gallery: [
-        { src: "/images/spotlight-1.jpg", ar: 1.333 },
-        { src: "/images/spotlight-2.jpg", ar: 0.749 },
-        { src: "/images/spotlight-3.jpg", ar: 1.5 },
-        { src: "/images/spotlight-4.jpg", ar: 0.667 },
-        { src: "/images/spotlight-5.jpg", ar: 1.5 },
-        { src: "/images/spotlight-6.jpg", ar: 1.5 },
-        { src: "/images/spotlight-7.jpg", ar: 0.667 },
-        { src: "/images/spotlight-8.jpg", ar: 0.667 },
-        { src: "/images/spotlight-9.jpg", ar: 0.75 },
+        { src: "/images/spotlight-1.webp", ar: 1.333 },
+        { src: "/images/spotlight-2.webp", ar: 0.749 },
+        { src: "/images/spotlight-3.webp", ar: 1.5 },
+        { src: "/images/spotlight-4.webp", ar: 0.667 },
+        { src: "/images/spotlight-5.webp", ar: 1.5 },
+        { src: "/images/spotlight-6.webp", ar: 1.5 },
+        { src: "/images/spotlight-7.webp", ar: 0.667 },
+        { src: "/images/spotlight-8.webp", ar: 0.667 },
+        { src: "/images/spotlight-9.webp", ar: 0.75 },
       ],
       paragraphs: [
         "站在 TEDx 那个标志性的红圆毯上，灯光打下来，台下是几百双期待的眼睛。那一刻，我讲的不是专业术语，而是「拒绝被定义，挣脱完美身材的枷锁」。是的，我是那个站上世界级思想分享舞台的演讲者，也是拿下两项市级演讲比赛银奖的分享者。",
@@ -126,15 +126,15 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
       tagline: "从校园媒体到乡村振兴，敢想敢干的「爱折腾」合伙人",
       cover: null,
       gallery: [
-        { src: "/images/partner-1.jpg", ar: 0.562 },
-        { src: "/images/partner-2.jpg", ar: 0.562 },
-        { src: "/images/partner-3.jpg", ar: 0.667 },
-        { src: "/images/partner-4.jpg", ar: 0.562 },
-        { src: "/images/partner-5.jpg", ar: 0.562 },
-        { src: "/images/partner-6.jpg", ar: 0.667 },
-        { src: "/images/partner-7.jpg", ar: 0.667 },
-        { src: "/images/partner-8.jpg", ar: 0.667 },
-        { src: "/images/partner-9.jpg", ar: 0.66 },
+        { src: "/images/partner-1.webp", ar: 0.562 },
+        { src: "/images/partner-2.webp", ar: 0.562 },
+        { src: "/images/partner-3.webp", ar: 0.667 },
+        { src: "/images/partner-4.webp", ar: 0.562 },
+        { src: "/images/partner-5.webp", ar: 0.562 },
+        { src: "/images/partner-6.webp", ar: 0.667 },
+        { src: "/images/partner-7.webp", ar: 0.667 },
+        { src: "/images/partner-8.webp", ar: 0.667 },
+        { src: "/images/partner-9.webp", ar: 0.66 },
       ],
       paragraphs: [
         "如果说校园是一个微缩的社会，那我大概是那个最「爱折腾」的合伙人。我的「商业版图」从校园媒体延伸到科研一线：作为学通社副社长和广播台录播部部长，我用声音和文字串联起校园的每个角落；作为食品科研社的副社长，我带着 200 多名社员去北京中医药大学跨校交流，在感官评价里寻找科学的乐趣。",
@@ -150,13 +150,13 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
       tagline: "试管、天平与舌尖上的万般风味，「没有坏食物，只有坏认知」",
       cover: null,
       gallery: [
-        { src: "/images/flavor-lab-1.jpg", ar: 0.667 },
-        { src: "/images/flavor-lab-2.jpg", ar: 0.658 },
-        { src: "/images/flavor-lab-3.jpg", ar: 0.749 },
-        { src: "/images/flavor-lab-4.jpg", ar: 0.562 },
-        { src: "/images/flavor-lab-5.jpg", ar: 0.75 },
-        { src: "/images/flavor-lab-6.jpg", ar: 0.665 },
-        { src: "/images/flavor-lab-7.jpg", ar: 0.667 },
+        { src: "/images/flavor-lab-1.webp", ar: 0.667 },
+        { src: "/images/flavor-lab-2.webp", ar: 0.658 },
+        { src: "/images/flavor-lab-3.webp", ar: 0.749 },
+        { src: "/images/flavor-lab-4.webp", ar: 0.562 },
+        { src: "/images/flavor-lab-5.webp", ar: 0.75 },
+        { src: "/images/flavor-lab-6.webp", ar: 0.665 },
+        { src: "/images/flavor-lab-7.webp", ar: 0.667 },
       ],
       paragraphs: [
         "我的实验室里，不只有试管和天平，还有舌尖上的万般风味。作为北京市营养师技能大赛学生组的第一名，我信仰一句话：「没有坏食物，只有坏认知。」我把这个信念揉进了我的竞赛项目里——作为负责人拿下「挑战杯」揭榜挂帅国赛一等奖的《粮芯稻》，我们用多模态 AI 给大米的风味做基因级别的质控；作为答辩人拿下主赛道国赛二等奖的《新膳》，我们解锁如何用重组蛋白为糖尿病患者点亮控糖的新可能。",
@@ -171,14 +171,14 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
       tagline: "从实验室到互联网大厂，每一段实习都是不同颜色的拼图",
       cover: null,
       gallery: [
-        { src: "/images/intern-1.jpg", ar: 0.75 },
-        { src: "/images/intern-2.jpg", ar: 0.75 },
-        { src: "/images/intern-3.jpg", ar: 1.333 },
-        { src: "/images/intern-4.jpg", ar: 0.749 },
-        { src: "/images/intern-5.jpg", ar: 0.75 },
-        { src: "/images/intern-6.jpg", ar: 0.75 },
-        { src: "/images/intern-7.jpg", ar: 0.75 },
-        { src: "/images/intern-8.jpg", ar: 0.75 },
+        { src: "/images/intern-1.webp", ar: 0.75 },
+        { src: "/images/intern-2.webp", ar: 0.75 },
+        { src: "/images/intern-3.webp", ar: 1.333 },
+        { src: "/images/intern-4.webp", ar: 0.749 },
+        { src: "/images/intern-5.webp", ar: 0.75 },
+        { src: "/images/intern-6.webp", ar: 0.75 },
+        { src: "/images/intern-7.webp", ar: 0.75 },
+        { src: "/images/intern-8.webp", ar: 0.75 },
       ],
       paragraphs: [
         "走出校园，步入实习，每一段都是不同颜色的拼图。食品研发员的身份让我接触产业视角；感官评测员的身份让我解锁风味轮盘；随后在东方甄选，我变身稽查员，每天和海量资质文件、市场监管条例打交道，利用 AI 工具批量筛查风险，建立了对食品行业规则的敬畏。",
@@ -234,9 +234,24 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
         "沿着南北回归线之间的咖啡带走一圈：先看世界全貌，再分非洲、亚太、中美洲、南美洲四个图幅下钻，最后落到 43 个具体产区——每个产区能看到它的气候、主栽豆种与对应的风味描述、当地惯用的处理法与烘焙度，配一张实拍。配色沿用杯测风味轮的逻辑：非洲玫红是花果酸，美洲琥珀是坚果焦糖，亚太苔绿是木质香料，所以颜色本身就在告诉你会喝到什么。纯前端单文件实现，地图路径全部手工调过。",
       note: "这是我第一件不为考试、不为交付，只因为自己想看它长什么样而做出来的东西。",
       tags: ["咖啡", "交互地图", "风味轮"],
-      cover: "/images/work-coffee-map.jpg",
+      cover: "/images/work-coffee-map.webp",
       file: "/works/files/coffee-flavor-map.html",
+      cta: "走进地图",
       date: "2026-08-15",
+    },
+    {
+      slug: "tuichao",
+      kind: "play",
+      title: "退潮 · ebbing",
+      oneLiner: "我们让她重新拥有形容词。",
+      description:
+        "面向进食障碍全谱系（暴食 / 厌食 / 贪食）本人及照护者的匿名自助微信小程序，无账号、无登录、数据不出设备。一个人对食物的语言最后只剩下数字，市面上的产品都在给她更准的数字；退潮反过来，每天一张滋味卡，让她从色、香、味、声、质地写下自己记得的样子，用久了整本卡都是她写的。另有发作那一刻的急性期三屏、一日六格的规律进食，和按风险时段排班的十五分钟定时小组。这里是手机壳内嵌的在线 Demo，患者端 62 屏加照护者端 22 屏都点得动。",
+      note: "烈变 2026 夏季千人黑客松 · 软件应用赛道作品。",
+      tags: ["微信小程序", "进食障碍", "匿名自助"],
+      cover: "/images/work-tuichao.webp",
+      file: "https://hu2976.github.io/ebbing/",
+      cta: "打开 Demo",
+      date: "2026-08-30",
     },
     {
       slug: "kaoyan-politics-map",
