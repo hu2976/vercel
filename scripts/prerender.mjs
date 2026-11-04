@@ -2,7 +2,7 @@
 // GitHub Pages 无 SPA rewrite：没有实体文件的深链会命中 404.html。
 // 这里把 dist/index.html 复制到每个路由目录下，使深链直接 200 返回，
 // 消除“软 404 + 跳首页闪烁”。新增作品/博客会被自动枚举。
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -10,7 +10,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const dist = join(root, 'dist')
 const shell = readFileSync(join(dist, 'index.html'), 'utf8')
 
-const routes = new Set(['/design', '/vibecoding', '/blog'])
+const routes = new Set(['/design', '/vibecoding'])
 
 // 读取 src/config.js
 const cfg = (await import(pathToFileURL(join(root, 'src/config.js')).href)).default
@@ -18,14 +18,6 @@ const cfg = (await import(pathToFileURL(join(root, 'src/config.js')).href)).defa
 for (const w of cfg.works || []) if (w.slug) routes.add('/vibecoding/' + w.slug)
 // 四维故事路由
 for (const s of cfg.stories || []) if (s.slug) routes.add('/story/' + s.slug)
-
-// 博客路由：读取 content/blog/*.md
-const blogDir = join(root, 'content/blog')
-if (existsSync(blogDir)) {
-  for (const f of readdirSync(blogDir)) {
-    if (f.endsWith('.md')) routes.add('/blog/' + f.replace(/\.md$/, ''))
-  }
-}
 
 let n = 0
 for (const r of routes) {
