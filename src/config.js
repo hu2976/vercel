@@ -27,11 +27,13 @@ I find joy in deep conversations and unhurried walks. I keep a curious eye on nu
 
 In my spare time, I gather my hobbies and small victories right here. And I truly believe that both you, reading this page, and I, who built it, are walking toward the future we imagine.`,
 
-  bioZh: `你好，我是胡静函，一个冰美式唯粉，欢迎来到我的小世界。
+  bioZh: `你好呀，我是胡静函，一个离不开冰美式的食品人，欢迎来到我的小天地。
 
-我喜欢深度的交谈与漫无目的的散步。我关注营养与科技的发展，热爱探索一切新鲜事物——因为我相信，学习是一生的旅程，而好奇心让生活始终鲜活。
+我喜欢松弛的闲谈，也爱漫无目的的散步。常常着眼于营养与科技的新动向，愿意主动尝试所有新鲜的东西。
+我总觉得，学习本就是一场漫长的旅程，而好奇心，是让日子一直保有光亮的东西。
 
-闲暇时，我会把我的爱好与一个个小成就都收藏在这里。我也真心相信：正在浏览这个页面的你，和亲手创建它的我，都会走向我们所憧憬的未来。`,
+有空的时候，我会慢慢收纳那些细碎爱好、小小的收获。
+愿此刻翻开这里的你，还有写下这些文字的我，都能一步步走向心里期待的远方。`,
 
   // 联系方式（首页点击方框浮现）
   contact: {
