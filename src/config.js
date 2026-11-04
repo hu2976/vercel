@@ -205,15 +205,15 @@ In my spare time, I gather my hobbies and small victories right here. And I trul
 
   // Design 设计作品（等作品文件夹到位后补充，图片放 public/images/ 下）
   designs: [
-    { title: "视觉设计 ①", image: "/images/design-1.jpg", tags: ["平面设计"] },
-    { title: "视觉设计 ②", image: "/images/design-2.jpg", tags: ["平面设计"] },
-    { title: "新质蛋白肉", image: "/images/design-3.jpg", tags: ["海报设计"] },
-    { title: "植得吃", image: "/images/design-4.jpg", tags: ["海报设计"] },
-    { title: "粮芯稻", image: "/images/design-5.jpg", tags: ["海报设计"] },
-    { title: "新膳", image: "/images/design-6.jpg", tags: ["海报设计"] },
-    { title: "红壶相声社", image: "/images/design-7.jpg", tags: ["视觉设计"] },
-    { title: "咖佤艺", image: "/images/design-8.jpg", tags: ["视觉设计"] },
-    { title: "黔品", image: "/images/design-9.jpg", tags: ["视觉设计"] },
+    { title: "视觉设计 ①", image: "/images/design-1.webp", tags: ["平面设计"] },
+    { title: "视觉设计 ②", image: "/images/design-2.webp", tags: ["平面设计"] },
+    { title: "新质蛋白肉", image: "/images/design-3.webp", tags: ["海报设计"] },
+    { title: "植得吃", image: "/images/design-4.webp", tags: ["海报设计"] },
+    { title: "粮芯稻", image: "/images/design-5.webp", tags: ["海报设计"] },
+    { title: "新膳", image: "/images/design-6.webp", tags: ["海报设计"] },
+    { title: "红壶相声社", image: "/images/design-7.webp", tags: ["视觉设计"] },
+    { title: "咖佤艺", image: "/images/design-8.webp", tags: ["视觉设计"] },
+    { title: "黔品", image: "/images/design-9.webp", tags: ["视觉设计"] },
   ],
 
   // Vibecoding 作品集。file 指向 public/works 下的静态页面，在 /vibecoding/:slug 内嵌展示
